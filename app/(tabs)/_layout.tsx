@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Tabs } from 'expo-router';
+import { Redirect, Tabs, router } from 'expo-router';
 import { View, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -80,9 +80,7 @@ export default function TabLayout() {
         listeners={() => ({
             tabPress: (e) => {
                 e.preventDefault();
-                // Handle add action (e.g., open modal)
-                // For now, we can navigate to a transaction creation screen if we had one
-                // router.push('/modal/add-transaction');
+                router.push('/modal/transaction');
             }
         })}
       />
