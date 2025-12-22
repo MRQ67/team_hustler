@@ -1,29 +1,23 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { Redirect } from 'expo-router';
+import { useAuth } from '../providers/AuthProvider';
 
 export default function Index() {
-  return (
-    <View style={styles.container}>
+  const { session, loading } = useAuth();
 
-      {/* App Title */}
-      <Text style={styles.title}>Welcome 👋</Text>
-      <Text style={styles.subtitle}>
-        This is your Expo homepage
-      </Text>
+  if (loading) {
+    // You can return a loading spinner here if desired
+    return null;
+  }
 
-      {/* Card Section */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Get Started</Text>
-        <Text style={styles.cardText}>
-          Edit app/index.tsx to build your app UI.
-        </Text>
+  // If the user is logged in, redirect to the home screen
+  if (session) {
+    return <Redirect href="/(tabs)" />;
+  }
 
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Explore</Text>
-        </Pressable>
-      </View>
+  // If the user is not logged in, redirect to the auth screen
+  return <Redirect href="/auth" />;
 
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
