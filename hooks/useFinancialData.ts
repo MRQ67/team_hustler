@@ -15,11 +15,20 @@ export interface Transaction {
   } | null;
 }
 
+export interface Account {
+  id: string;
+  name: string;
+  account_type: string;
+  balance: number;
+  currency: string;
+}
+
 export interface FinancialData {
   totalBalance: number;
   income: number;
   expense: number;
   recentTransactions: Transaction[];
+  accounts: Account[];
   loading: boolean;
   refetch: () => Promise<void>;
 }
@@ -30,6 +39,7 @@ export function useFinancialData() {
     income: 0,
     expense: 0,
     recentTransactions: [],
+    accounts: [],
     loading: true,
     refetch: async () => {},
   });
@@ -41,32 +51,34 @@ export function useFinancialData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 1. Calculate Total Balance
-      // Fetch all accounts first
-      const { data: accounts, error: accountsError } = await supabase
+      // 1. Fetch Accounts & Calculate Total Balance
+      const { data: accountsData, error: accountsError } = await supabase
         .from('accounts')
-        .select('id')
+        .select('*')
         .eq('user_id', user.id);
 
       if (accountsError) throw accountsError;
 
       let totalBal = 0;
-      if (accounts && accounts.length > 0) {
+      const accountsWithBalance: Account[] = [];
+
+      if (accountsData && accountsData.length > 0) {
         // Calculate balance for each account using RPC
-        // We use Promise.all to fetch them in parallel
-        const balancePromises = accounts.map(async (account) => {
+        const balancePromises = accountsData.map(async (account) => {
           const { data: balance, error: rpcError } = await supabase
             .rpc('calculate_account_balance', { p_account_id: account.id });
           
           if (rpcError) {
              console.error('Error calculating balance for account', account.id, rpcError);
-             return 0;
+             return { ...account, balance: 0 };
           }
-          return Number(balance) || 0;
+          const bal = Number(balance) || 0;
+          return { ...account, balance: bal };
         });
 
-        const balances = await Promise.all(balancePromises);
-        totalBal = balances.reduce((sum, bal) => sum + bal, 0);
+        const updatedAccounts = await Promise.all(balancePromises);
+        accountsWithBalance.push(...updatedAccounts);
+        totalBal = updatedAccounts.reduce((sum, acc) => sum + acc.balance, 0);
       }
 
       // 2. Calculate Monthly Income & Expense
@@ -124,6 +136,7 @@ export function useFinancialData() {
           amount: Number(tx.amount), // Ensure number
           categories: Array.isArray(tx.categories) ? tx.categories[0] : tx.categories // Handle Supabase join array/object
         })) || [],
+        accounts: accountsWithBalance,
         loading: false,
         refetch: fetchData,
       });
