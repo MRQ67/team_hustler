@@ -33,6 +33,15 @@ export interface Budget {
   category_name?: string;
 }
 
+export interface AnalyticsData {
+  name: string;
+  population: number;
+  color: string;
+  legendFontColor: string;
+  legendFontSize: number;
+  amount: number;
+}
+
 export interface FinancialData {
   totalBalance: number;
   income: number;
@@ -40,6 +49,7 @@ export interface FinancialData {
   recentTransactions: Transaction[];
   accounts: Account[];
   budgets: Budget[];
+  analytics: AnalyticsData[];
   loading: boolean;
   refetch: () => Promise<void>;
 }
@@ -52,6 +62,7 @@ export function useFinancialData() {
     recentTransactions: [],
     accounts: [],
     budgets: [],
+    analytics: [],
     loading: true,
     refetch: async () => {},
   });
@@ -203,6 +214,70 @@ export function useFinancialData() {
         }));
       }
 
+      // 5. Calculate Analytics Data (Expense Breakdown by Category)
+      const currentMonthAnalytics = new Date();
+      const startAnalytics = formatISO(startOfMonth(currentMonthAnalytics));
+      const endAnalytics = formatISO(endOfMonth(currentMonthAnalytics));
+
+      const { data: categoryExpenses, error: categoryError } = await supabase
+        .from('transactions')
+        .select(`
+          amount,
+          categories (
+            name,
+            color
+          )
+        `)
+        .eq('user_id', user.id)
+        .eq('transaction_type', 'expense')
+        .gte('date', startAnalytics)
+        .lte('date', endAnalytics);
+
+      let analyticsData: AnalyticsData[] = [];
+      if (categoryError) {
+        console.error('Error fetching category expenses:', categoryError);
+      } else if (categoryExpenses && categoryExpenses.length > 0) {
+        // Group expenses by category
+        const categoryMap: { [key: string]: number } = {};
+        const categoryColors: { [key: string]: string } = {};
+
+        categoryExpenses.forEach(tx => {
+          const catName = tx.categories?.name || 'Uncategorized';
+          const catColor = tx.categories?.color || '#888888'; // Default color
+
+          if (!categoryMap[catName]) {
+            categoryMap[catName] = 0;
+            categoryColors[catName] = catColor;
+          }
+
+          categoryMap[catName] += Number(tx.amount);
+        });
+
+        // Calculate total expenses
+        const totalExpenses = Object.values(categoryMap).reduce((sum, amount) => sum + amount, 0);
+
+        // Convert to analytics format with percentages
+        analyticsData = Object.entries(categoryMap).map(([name, amount], index) => {
+          const percentage = totalExpenses > 0 ? Math.round((amount / totalExpenses) * 100) : 0;
+
+          // Define a set of colors for categories
+          const colors = ['#D34E4E', '#F9E7B2', '#60a5fa', '#a78bfa', '#34d399', '#f87171', '#60a5fa', '#38bdf8'];
+          const color = categoryColors[name] || colors[index % colors.length];
+
+          return {
+            name,
+            population: percentage,
+            color,
+            legendFontColor: "#fff",
+            legendFontSize: 12,
+            amount
+          };
+        });
+
+        // Sort by amount in descending order to show the biggest expenses first
+        analyticsData.sort((a, b) => b.amount - a.amount);
+      }
+
       setData({
         totalBalance: totalBal,
         income: monthlyIncome,
@@ -214,6 +289,7 @@ export function useFinancialData() {
         })) || [],
         accounts: accountsWithBalance,
         budgets: budgetsWithSpent,
+        analytics: analyticsData,
         loading: false,
         refetch: fetchData,
       });

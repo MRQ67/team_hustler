@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, RefreshControl } from 'react-native';
+import { useRouter } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -8,6 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFinancialData } from '../../hooks/useFinancialData';
 
 export default function AccountsScreen() {
+  const router = useRouter();
   const { user } = useAuth();
   const { totalBalance, accounts, loading, refetch } = useFinancialData();
 
@@ -23,17 +25,8 @@ export default function AccountsScreen() {
     >
        {/* Header Section */}
       <View className="flex-row items-center justify-between p-6 pt-8">
-        <View className="flex-row items-center gap-3">
-          <View className="relative w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg">
-             <Image 
-                 source={{ uri: 'https://ui-avatars.com/api/?name=' + (user?.user_metadata?.name || 'User') + '&background=random' }} 
-                 className="w-full h-full"
-             />
-          </View>
-          <View className="flex-col">
-            <Text className="text-white/60 text-xs font-medium uppercase tracking-wider font-display">Welcome back</Text>
-            <Text className="text-white text-sm font-bold font-display">{user?.user_metadata?.name || 'Alex Morgan'}</Text>
-          </View>
+        <View className="flex-1">
+          <Text className="text-white text-xl font-bold font-display">Accounts</Text>
         </View>
         <TouchableOpacity className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 items-center justify-center">
           <MaterialIcons name="notifications-none" size={24} color="white" />
@@ -68,7 +61,7 @@ export default function AccountsScreen() {
         {accounts.length === 0 ? (
             <GlassPane className="w-full p-6 items-center justify-center rounded-2xl">
                 <Text className="text-white/50 text-sm mb-4">No accounts found</Text>
-                <TouchableOpacity className="bg-primary px-4 py-2 rounded-xl">
+                <TouchableOpacity className="bg-primary px-4 py-2 rounded-xl" onPress={() => router.push('/modal/account')}>
                     <Text className="text-white font-bold">Add Account</Text>
                 </TouchableOpacity>
             </GlassPane>
@@ -118,11 +111,15 @@ export default function AccountsScreen() {
         {/* Row 4: Quick Actions (Horizontal Scroll) */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 -mx-6 px-6 pb-2">
           {[
-            { icon: 'add', label: 'Add Account', bg: 'bg-primary', iconColor: 'white' },
-            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white' },
-            { icon: 'qr-code-scanner', label: 'Scan', bg: 'bg-white/10', iconColor: 'white' }
+            { icon: 'add', label: 'Add Account', bg: 'bg-primary', iconColor: 'white', action: () => router.push('/modal/account') },
+            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white', action: () => {} },
+            { icon: 'qr-code-scanner', label: 'Scan', bg: 'bg-white/10', iconColor: 'white', action: () => {} }
           ].map((action, i) => (
-             <TouchableOpacity key={i} className="flex-row items-center gap-2 pl-3 pr-5 py-3 rounded-xl bg-white/5 border border-white/10 active:scale-95 mr-3">
+             <TouchableOpacity
+                key={i}
+                className="flex-row items-center gap-2 pl-3 pr-5 py-3 rounded-xl bg-white/5 border border-white/10 active:scale-95 mr-3"
+                onPress={action.action}
+             >
                 <View className={`w-8 h-8 rounded-full ${action.bg} items-center justify-center shadow-lg ${action.bg === 'bg-primary' ? 'shadow-primary/30' : ''}`}>
                    <MaterialIcons name={action.icon as any} size={14} color={action.iconColor} />
                 </View>
