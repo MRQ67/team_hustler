@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Tabs, router } from 'expo-router';
-import { View, Platform } from 'react-native';
+import { View, Platform, TouchableOpacity } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../providers/AuthProvider';
