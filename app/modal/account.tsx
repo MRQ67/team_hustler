@@ -15,6 +15,8 @@ export default function AccountModal() {
   const [startingBalance, setStartingBalance] = useState('0');
   const [currency, setCurrency] = useState('USD');
   const [loading, setLoading] = useState(false);
+  const [accountColor, setAccountColor] = useState('#60a5fa'); // Default blue color
+  const [accountIcon, setAccountIcon] = useState('payments'); // Default icon based on account type
 
   const accountTypes = [
     { value: 'cash', label: 'Cash', icon: 'payments' },
@@ -25,11 +27,22 @@ export default function AccountModal() {
   ];
 
   const currencies = [
-    { value: 'USD', label: 'USD ($)' },
-    { value: 'EUR', label: 'EUR (€)' },
-    { value: 'GBP', label: 'GBP (£)' },
-    { value: 'ETB', label: 'ETB (Br)' },
+    { value: 'USD', label: 'USD ($)', symbol: '$' },
+    { value: 'EUR', label: 'EUR (€)', symbol: '€' },
+    { value: 'GBP', label: 'GBP (£)', symbol: '£' },
+    { value: 'ETB', label: 'ETB (Br)', symbol: 'Br' },
+    { value: 'JPY', label: 'JPY (¥)', symbol: '¥' },
+    { value: 'CNY', label: 'CNY (¥)', symbol: '¥' },
+    { value: 'INR', label: 'INR (₹)', symbol: '₹' },
+    { value: 'CAD', label: 'CAD (C$)', symbol: 'C$' },
+    { value: 'AUD', label: 'AUD (A$)', symbol: 'A$' },
   ];
+
+  // Function to get currency symbol based on selected currency
+  const getCurrencySymbol = () => {
+    const selectedCurrency = currencies.find(c => c.value === currency);
+    return selectedCurrency ? selectedCurrency.symbol : '$';
+  };
 
   const handleCreateAccount = async () => {
     if (!accountName.trim()) {
@@ -38,7 +51,7 @@ export default function AccountModal() {
     }
 
     setLoading(true);
-    
+
     try {
       const { error } = await supabase
         .from('accounts')
@@ -48,6 +61,8 @@ export default function AccountModal() {
           account_type: accountType,
           starting_balance: parseFloat(startingBalance) || 0,
           currency: currency,
+          color: accountColor,
+          icon: accountIcon,
         }]);
 
       if (error) {
@@ -102,7 +117,10 @@ export default function AccountModal() {
               <TouchableOpacity
                 key={type.value}
                 className={`flex-row items-center p-4 rounded-2xl ${accountType === type.value ? 'bg-white/10' : 'bg-white/5'}`}
-                onPress={() => setAccountType(type.value)}
+                onPress={() => {
+                  setAccountType(type.value);
+                  setAccountIcon(type.icon); // Update icon when account type changes
+                }}
               >
                 <View className="w-10 h-10 rounded-xl bg-white/5 items-center justify-center mr-3">
                   <MaterialIcons name={type.icon as any} size={20} color="white" />
@@ -120,7 +138,7 @@ export default function AccountModal() {
         <View className="gap-2">
           <Text className="text-white/60 font-medium mb-2">Starting Balance</Text>
           <GlassPane className="rounded-2xl p-4 flex-row items-center">
-            <Text className="text-white/60 text-xl mr-2">$</Text>
+            <Text className="text-white/60 text-xl mr-2">{getCurrencySymbol()}</Text>
             <TextInput
               className="text-white text-xl font-display flex-1"
               placeholder="0.00"
@@ -146,6 +164,21 @@ export default function AccountModal() {
                   {curr.label}
                 </Text>
               </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Color Selector */}
+        <View className="gap-2">
+          <Text className="text-white/60 font-medium mb-2">Account Color</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {['#60a5fa', '#34d399', '#f87171', '#a78bfa', '#fbbf24', '#38bdf8', '#a3e635', '#f472b6'].map((color) => (
+              <TouchableOpacity
+                key={color}
+                className={`w-10 h-10 rounded-full ${accountColor === color ? 'border-2 border-white' : 'border border-white/30'}`}
+                style={{ backgroundColor: color }}
+                onPress={() => setAccountColor(color)}
+              />
             ))}
           </View>
         </View>
