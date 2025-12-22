@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
-  const { totalBalance, income, expense, recentTransactions, loading, refetch } = useFinancialData();
+  const { totalBalance, income, expense, recentTransactions, budgets, loading, refetch } = useFinancialData();
 
   const onRefresh = useCallback(() => {
     refetch();
@@ -103,39 +103,43 @@ export default function HomeScreen() {
           </GlassPane>
         </View>
 
-        {/* Quick Actions */}
-        <GlassPane className="p-4 rounded-2xl">
-          <Text className="text-white/80 text-sm font-semibold mb-4 px-1">Quick Actions</Text>
-          <View className="flex-row justify-between px-2">
-            {[
-              { icon: 'send', label: 'Send', color: '#F9E7B2' },
-              { icon: 'request-quote', label: 'Request', color: 'white' },
-              { icon: 'add-card', label: 'Top-up', color: 'white' },
-              { icon: 'receipt-long', label: 'Bills', color: 'white' },
-            ].map((action, index) => (
-              <TouchableOpacity key={index} className="items-center gap-2">
-                <View className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 items-center justify-center active:bg-white/10">
-                  <MaterialIcons name={action.icon as any} size={24} color={action.color} />
-                </View>
-                <Text className="text-[11px] text-white/70 font-medium">{action.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </GlassPane>
-
         {/* Budget Progress */}
-        <GlassPane className="p-5 rounded-2xl gap-3">
-          <View className="flex-row justify-between items-end">
-            <View>
-              <Text className="text-white text-sm font-semibold mb-1">Monthly Budget</Text>
-              <Text className="text-white/50 text-xs">You've spent <Text className="text-white font-medium">,200</Text> of $3,000</Text>
+        {budgets && budgets.length > 0 ? (
+          budgets.map((budget) => {
+            const spent = budget.spent || 0;
+            const amount = budget.amount || 0;
+            const percentage = amount > 0 ? Math.min(100, Math.round((spent / amount) * 100)) : 0;
+
+            return (
+              <GlassPane key={budget.id} className="p-5 rounded-2xl gap-3">
+                <View className="flex-row justify-between items-end">
+                  <View>
+                    <Text className="text-white text-sm font-semibold mb-1">
+                      {budget.category_name ? `${budget.category_name} Budget` : 'Monthly Budget'}
+                    </Text>
+                    <Text className="text-white/50 text-xs">
+                      You've spent <Text className="text-white font-medium">${spent.toFixed(2)}</Text> of ${amount.toFixed(2)}
+                    </Text>
+                  </View>
+                  <Text className="text-accent text-sm font-bold">{percentage}%</Text>
+                </View>
+                <View className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                  <View
+                    className="h-full bg-accent rounded-full shadow-[0_0_8px_rgba(249,231,178,0.6)]"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </View>
+              </GlassPane>
+            );
+          })
+        ) : (
+          <GlassPane className="p-5 rounded-2xl gap-3">
+            <View className="items-center justify-center py-6">
+              <Text className="text-white/50 text-center mb-2">No budget set</Text>
+              <Text className="text-white/40 text-xs text-center">Set a monthly budget to track your spending</Text>
             </View>
-            <Text className="text-accent text-sm font-bold">40%</Text>
-          </View>
-          <View className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-            <View className="h-full bg-accent rounded-full shadow-[0_0_8px_rgba(249,231,178,0.6)]" style={{ width: '40%' }} />
-          </View>
-        </GlassPane>
+          </GlassPane>
+        )}
 
         {/* Recent Transactions */}
         <GlassPane className="rounded-2xl overflow-hidden mb-6">

@@ -23,12 +23,23 @@ export interface Account {
   currency: string;
 }
 
+export interface Budget {
+  id: string;
+  amount: number;
+  spent: number;
+  period_start: string;
+  period_end: string;
+  category_id?: string;
+  category_name?: string;
+}
+
 export interface FinancialData {
   totalBalance: number;
   income: number;
   expense: number;
   recentTransactions: Transaction[];
   accounts: Account[];
+  budgets: Budget[];
   loading: boolean;
   refetch: () => Promise<void>;
 }
@@ -40,6 +51,7 @@ export function useFinancialData() {
     expense: 0,
     recentTransactions: [],
     accounts: [],
+    budgets: [],
     loading: true,
     refetch: async () => {},
   });
@@ -127,6 +139,70 @@ export function useFinancialData() {
 
       if (recentError) throw recentError;
 
+      // 4. Fetch Budgets and calculate spent amount
+      const { data: budgetsData, error: budgetsError } = await supabase
+        .from('budgets')
+        .select(`
+          id,
+          amount,
+          period_start,
+          period_end,
+          categories (
+            name
+          )
+        `)
+        .eq('user_id', user.id)
+        .gte('period_start', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]) // Current month start
+        .lte('period_end', new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]); // Current month end
+
+      if (budgetsError) throw budgetsError;
+
+      // Calculate spent amount for each budget based on transactions
+      let budgetsWithSpent: Budget[] = [];
+      if (budgetsData && budgetsData.length > 0) {
+        budgetsWithSpent = await Promise.all(budgetsData.map(async (budget) => {
+          // Calculate expenses for this budget's category in the current month
+          let spent = 0;
+          if (budget.categories) {
+            const { data: categoryExpenses, error: expensesError } = await supabase
+              .from('transactions')
+              .select('amount')
+              .eq('user_id', user.id)
+              .eq('category_id', budget.categories.id)
+              .eq('transaction_type', 'expense')
+              .gte('date', budget.period_start)
+              .lte('date', budget.period_end);
+
+            if (!expensesError && categoryExpenses) {
+              spent = categoryExpenses.reduce((sum, tx) => sum + Number(tx.amount), 0);
+            }
+          } else {
+            // If no category specified, sum all expenses
+            const { data: allExpenses, error: allExpensesError } = await supabase
+              .from('transactions')
+              .select('amount')
+              .eq('user_id', user.id)
+              .eq('transaction_type', 'expense')
+              .gte('date', budget.period_start)
+              .lte('date', budget.period_end);
+
+            if (!allExpensesError && allExpenses) {
+              spent = allExpenses.reduce((sum, tx) => sum + Number(tx.amount), 0);
+            }
+          }
+
+          return {
+            id: budget.id,
+            amount: Number(budget.amount),
+            spent: spent,
+            period_start: budget.period_start,
+            period_end: budget.period_end,
+            category_id: budget.categories?.id,
+            category_name: budget.categories?.name
+          };
+        }));
+      }
+
       setData({
         totalBalance: totalBal,
         income: monthlyIncome,
@@ -137,6 +213,7 @@ export function useFinancialData() {
           categories: Array.isArray(tx.categories) ? tx.categories[0] : tx.categories // Handle Supabase join array/object
         })) || [],
         accounts: accountsWithBalance,
+        budgets: budgetsWithSpent,
         loading: false,
         refetch: fetchData,
       });
