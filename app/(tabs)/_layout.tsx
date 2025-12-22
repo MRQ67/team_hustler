@@ -70,11 +70,15 @@ export default function TabLayout() {
           // But to match the design's "Floating Dock" having a big center button:
           // We can use a custom button component for this tab
           tabBarButton: (props) => (
-             <View className="top-[-20px] items-center justify-center">
+             <TouchableOpacity 
+               {...props}
+               className="top-[-20px] items-center justify-center"
+               activeOpacity={0.8}
+             >
                 <View className="w-16 h-16 bg-primary rounded-full items-center justify-center shadow-lg shadow-primary/40 border-4 border-background-dark">
                    <MaterialIcons name="add" size={32} color="white" />
                 </View>
-             </View>
+             </TouchableOpacity>
           ),
         }}
         listeners={() => ({

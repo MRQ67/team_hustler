@@ -1,28 +1,31 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../providers/AuthProvider';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFinancialData } from '../../hooks/useFinancialData';
+import { format } from 'date-fns';
 
 export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
+  const { totalBalance, income, expense, recentTransactions, loading, refetch } = useFinancialData();
 
-  // Dummy Data
-  const totalBalance = 14230.50;
-  const income = 4200.00;
-  const expense = 1200.00;
-  const recentTransactions = [
-    { id: 1, title: 'Uber Eats', category: 'Food', date: 'Today, 12:30 PM', amount: -24.50, icon: 'fastfood', color: 'text-white' },
-    { id: 2, title: 'Netflix', category: 'Subscription', date: 'Yesterday', amount: -15.00, icon: 'movie', color: 'text-primary' },
-    { id: 3, title: 'Salary', category: 'Income', date: 'Sep 28', amount: 3200.00, icon: 'attach-money', color: 'text-accent' },
-  ];
+  const onRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper 
+       scroll={true}
+       contentContainerStyle={{ paddingBottom: 100 }}
+       refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} tintColor="#fff" />
+       }
+    >
       {/* Header */}
       <View className="flex-row items-center justify-between p-6">
         <View className="flex-row items-center gap-3">
@@ -86,7 +89,7 @@ export default function HomeScreen() {
             </View>
             <View>
               <Text className="text-white/50 text-xs font-medium mb-1">Income</Text>
-              <Text className="text-accent text-xl font-bold tracking-tight">${income.toLocaleString()}</Text>
+              <Text className="text-accent text-xl font-bold tracking-tight">${income.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
             </View>
           </GlassPane>
           <GlassPane className="flex-1 p-5 rounded-2xl gap-3">
@@ -95,7 +98,7 @@ export default function HomeScreen() {
             </View>
             <View>
               <Text className="text-white/50 text-xs font-medium mb-1">Expense</Text>
-              <Text className="text-white text-xl font-bold tracking-tight">${expense.toLocaleString()}</Text>
+              <Text className="text-white text-xl font-bold tracking-tight">${expense.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
             </View>
           </GlassPane>
         </View>
@@ -143,22 +146,32 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
           <View>
-            {recentTransactions.map((tx, index) => (
-              <TouchableOpacity key={tx.id} className={`flex-row items-center justify-between p-4 active:bg-white/5 ${index !== recentTransactions.length - 1 ? 'border-b border-white/5' : ''}`}>
-                <View className="flex-row items-center gap-3">
-                  <View className="w-10 h-10 rounded-full bg-white/5 items-center justify-center">
-                    <MaterialIcons name={tx.icon as any} size={20} color={tx.amount > 0 ? '#F9E7B2' : 'white'} />
-                  </View>
-                  <View>
-                    <Text className="text-white text-sm font-semibold">{tx.title}</Text>
-                    <Text className="text-white/40 text-[11px]">{tx.date}</Text>
-                  </View>
+            {recentTransactions.length === 0 ? (
+                <View className="p-4 items-center">
+                    <Text className="text-white/40 text-sm">No recent transactions</Text>
                 </View>
-                <Text className={`font-bold text-sm ${tx.amount > 0 ? 'text-accent' : 'text-white'}`}>
-                  {tx.amount > 0 ? '+' : ''}${Math.abs(tx.amount).toFixed(2)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            ) : (
+                recentTransactions.map((tx, index) => (
+                <TouchableOpacity key={tx.id} className={`flex-row items-center justify-between p-4 active:bg-white/5 ${index !== recentTransactions.length - 1 ? 'border-b border-white/5' : ''}`}>
+                    <View className="flex-row items-center gap-3">
+                    <View className="w-10 h-10 rounded-full bg-white/5 items-center justify-center">
+                        <MaterialIcons 
+                            name={(tx.categories?.icon as any) || (tx.transaction_type === 'income' ? 'attach-money' : 'payment')} 
+                            size={20} 
+                            color={tx.transaction_type === 'income' ? '#F9E7B2' : 'white'} 
+                        />
+                    </View>
+                    <View>
+                        <Text className="text-white text-sm font-semibold">{tx.description || 'Untitled'}</Text>
+                        <Text className="text-white/40 text-[11px]">{format(new Date(tx.date), 'MMM d, h:mm a')}</Text>
+                    </View>
+                    </View>
+                    <Text className={`font-bold text-sm ${tx.transaction_type === 'income' ? 'text-accent' : 'text-white'}`}>
+                    {tx.transaction_type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
+                    </Text>
+                </TouchableOpacity>
+                ))
+            )}
           </View>
         </GlassPane>
       </View>
