@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Finance Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d35050",
+                        "accent": "#F9E7B2",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1f1313",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-surface": "rgba(255, 255, 255, 0.03)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+                    backdropBlur: {
+                        'xs': '2px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-dock {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .glass-button:active {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(0.98);
+        }
+
+        /* Ambient Background Gradients */
+        .ambient-light-1 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(211, 80, 80, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            right: -50px;
+            border-radius: 50%;
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-light-2 {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(249, 231, 178, 0.08) 0%, rgba(0,0,0,0) 70%);
+            bottom: 20%;
+            left: -80px;
+            border-radius: 50%;
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Hide Scrollbar for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-white font-display overflow-x-hidden selection:bg-primary/30">
+<!-- Ambient Background Effects -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+<div class="ambient-light-1"></div>
+<div class="ambient-light-2"></div>
+</div>
+<!-- Main Container -->
+<div class="relative flex min-h-screen w-full flex-col pb-32">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 z-10">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-white/10" data-alt="User profile picture of a young man smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2tUv_s5nhEMNHrnXkVznbWqCVP8k999RyupmQVGmrQGjWU1Nj3MzjUi5MQqjBK1x7loSDLLL1dC_AbZhhXeqMX6LptuP5fEH_k9L_05biXfW618W10K_pQCWtol0e8Dym-zEFjFt3AKD-WCmBdt0x7mZVTCJo6TiayMaO5wSzoGr6ttklfZrZmVeH63cWlsVS6Nm--RhvjeOVWvaFgI0wxJUL2pwKyggPHIstDv3Ij9jOwqZx34_LzDovmOqqjlB7850mclOXwBNq");'>
+</div>
+<div class="absolute bottom-0 right-0 size-3 bg-accent rounded-full border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-white/60 text-xs font-medium leading-tight">Good Morning</span>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">Alex Sterling</h2>
+</div>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full glass-button text-white relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2.5 right-2.5 size-2 bg-primary rounded-full border border-background-dark"></span>
+</button>
+</header>
+<!-- Content Grid (Bento) -->
+<main class="flex-1 px-4 flex flex-col gap-4 z-10 max-w-md mx-auto w-full">
+<!-- Total Balance Card (Large) -->
+<div class="glass-panel p-6 rounded-3xl relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 size-40 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl group-hover:bg-white/10 transition-colors duration-500"></div>
+<div class="relative z-10 flex flex-col gap-1">
+<p class="text-white/60 text-sm font-medium">Total Balance</p>
+<div class="flex items-baseline gap-2">
+<h1 class="text-4xl font-bold tracking-tight text-white">$14,230.50</h1>
+</div>
+<div class="flex items-center gap-1.5 mt-2">
+<span class="flex items-center justify-center bg-accent/20 text-accent rounded-full px-2 py-0.5 text-xs font-bold">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span>
+                            +12%
+                        </span>
+<span class="text-white/40 text-xs">vs last month</span>
+</div>
+</div>
+<!-- Decorative Abstract Line -->
+<svg class="absolute bottom-0 left-0 w-full h-16 opacity-20 pointer-events-none" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 35 Q 20 20 40 30 T 100 10 L 100 40 L 0 40 Z" fill="url(#grad1)"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:white;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:white;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<!-- Income & Expense Row -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Income -->
+<div class="glass-panel p-5 rounded-2xl flex flex-col gap-3">
+<div class="size-8 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+</div>
+<div>
+<p class="text-white/50 text-xs font-medium mb-1">Income</p>
+<p class="text-accent text-xl font-bold tracking-tight">$4,200</p>
+</div>
+</div>
+<!-- Expense -->
+<div class="glass-panel p-5 rounded-2xl flex flex-col gap-3">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</div>
+<div>
+<p class="text-white/50 text-xs font-medium mb-1">Expense</p>
+<p class="text-white text-xl font-bold tracking-tight">$1,200</p>
+</div>
+</div>
+</div>
+<!-- Quick Actions Scroll -->
+<div class="glass-panel p-4 rounded-2xl">
+<p class="text-white/80 text-sm font-semibold mb-4 px-1">Quick Actions</p>
+<div class="grid grid-cols-4 gap-2">
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-accent text-[24px]">send</span>
+</div>
+<span class="text-[11px] text-white/70 font-medium">Send</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[24px]">request_quote</span>
+</div>
+<span class="text-[11px] text-white/70 font-medium">Request</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[24px]">add_card</span>
+</div>
+<span class="text-[11px] text-white/70 font-medium">Top-up</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-[24px]">receipt_long</span>
+</div>
+<span class="text-[11px] text-white/70 font-medium">Bills</span>
+</button>
+</div>
+</div>
+<!-- Budget Progress -->
+<div class="glass-panel p-5 rounded-2xl flex flex-col gap-3">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-white text-sm font-semibold mb-1">Monthly Budget</p>
+<p class="text-white/50 text-xs">You've spent <span class="text-white font-medium">$1,200</span> of $3,000</p>
+</div>
+<span class="text-accent text-sm font-bold">40%</span>
+</div>
+<div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-accent rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Recent Transactions -->
+<div class="glass-panel rounded-2xl overflow-hidden mb-6">
+<div class="p-5 pb-2 flex justify-between items-center">
+<h3 class="text-white text-sm font-semibold">Transactions</h3>
+<button class="text-primary text-xs font-semibold hover:text-white transition-colors">See all</button>
+</div>
+<div class="flex flex-col">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer border-b border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]">fastfood</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-sm font-semibold">Uber Eats</span>
+<span class="text-white/40 text-[11px]">Today, 12:30 PM</span>
+</div>
+</div>
+<span class="text-white font-bold text-sm">-$24.50</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer border-b border-white/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">movie</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-sm font-semibold">Netflix</span>
+<span class="text-white/40 text-[11px]">Yesterday</span>
+</div>
+</div>
+<span class="text-white font-bold text-sm">-$15.00</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent text-[20px]">payments</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-sm font-semibold">Salary</span>
+<span class="text-white/40 text-[11px]">Sep 28</span>
+</div>
+</div>
+<span class="text-accent font-bold text-sm">+$3,200.00</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Dock Navigation -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[360px] z-50">
+<div class="glass-dock rounded-full p-2 flex items-center justify-between px-6 h-[72px]">
+<button class="flex flex-col items-center justify-center gap-1 size-10 text-accent">
+<span class="material-symbols-outlined text-[26px] filled">home</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 size-10 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">bar_chart</span>
+</button>
+<button class="flex items-center justify-center size-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 -mt-8 border-4 border-background-dark transform transition hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-[32px]">add</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 size-10 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">account_balance_wallet</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 size-10 text-white/40 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">person</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

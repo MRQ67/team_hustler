@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>App Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+                colors: {
+                "primary": "#d35050",
+                "accent": "#F9E7B2",
+                "background-light": "#f8f6f6",
+                "background-dark": "#1f1313",
+                },
+                fontFamily: {
+                "display": ["Manrope", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+            },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
+        }
+        
+        /* Glassmorphism utility classes */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-dock {
+            background: rgba(31, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white overflow-x-hidden min-h-screen relative">
+<!-- Decorative Ambient Background Gradients -->
+<div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+<div class="absolute top-[-10%] left-[-20%] w-[600px] h-[600px] rounded-full bg-primary/20 blur-[120px] mix-blend-screen opacity-40"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#522525]/40 blur-[100px] opacity-60"></div>
+<div class="absolute top-[40%] right-[-20%] w-[300px] h-[300px] rounded-full bg-accent/5 blur-[80px]"></div>
+</div>
+<div class="relative flex h-full w-full flex-col pb-28 max-w-md mx-auto min-h-screen">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 pt-8 sticky top-0 z-20">
+<h1 class="text-2xl font-bold tracking-tight text-white/90">Settings</h1>
+<button class="flex items-center justify-center size-10 rounded-full glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white/80" style="font-size: 24px;">search</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex flex-col px-4 gap-6 w-full">
+<!-- Profile Section -->
+<div class="glass-panel rounded-3xl p-5 flex items-center gap-4 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-50">
+<span class="material-symbols-outlined text-white/20 text-6xl rotate-12 transform translate-x-2 -translate-y-2">fingerprint</span>
+</div>
+<div class="relative shrink-0">
+<div class="size-16 rounded-full bg-cover bg-center ring-2 ring-white/10" data-alt="Portrait of Alex Morgan" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDLSglR0oxnKec8MOR8bDNcXKdSlqYDItcfHWMZ0zYoXIXATAaKTyaZii8knrPSFU1j_EVWLvS54TQLdxV-UoWFX0imXapFJlpIMQjeV4clldXn7usthqiO5C0BWKgK_ZZymFM_tsI90OllCz9FGp3Iniv2c-A_zmisiWegHjE8E2mk2IecfkPAC6rHpMF8xkfqCOlR3lNZfTAWcVbTACYnJyA-_8iAX56B8IXMc6K9wgRe-CJ_TmTzdnOZI01eb7QAYc0kOwcx0Yd1');"></div>
+<div class="absolute bottom-0 right-0 bg-primary rounded-full p-1 border-2 border-[#1f1313] flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[10px] font-bold">edit</span>
+</div>
+</div>
+<div class="flex flex-col z-10">
+<h2 class="text-lg font-bold text-white leading-tight">Alex Morgan</h2>
+<p class="text-white/50 text-sm font-medium">alex.morgan@finance.app</p>
+<button class="mt-2 text-accent text-xs font-semibold tracking-wide uppercase hover:text-white transition-colors text-left flex items-center gap-1">
+                        Edit Profile <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Group: Preferences -->
+<div class="flex flex-col gap-3">
+<h3 class="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider">Preferences</h3>
+<div class="glass-panel rounded-2xl flex flex-col overflow-hidden">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/5 last:border-0">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-accent" style="font-size: 20px;">dark_mode</span>
+</div>
+<span class="text-white/90 font-medium">Dark Mode</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+</label>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/5 last:border-0">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-primary/80" style="font-size: 20px;">notifications</span>
+</div>
+<span class="text-white/90 font-medium">Notifications</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-white/40 text-sm">On</span>
+<span class="material-symbols-outlined text-white/20" style="font-size: 20px;">chevron_right</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-indigo-400" style="font-size: 20px;">payments</span>
+</div>
+<span class="text-white/90 font-medium">Currency</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-white/40 text-sm">USD</span>
+<span class="material-symbols-outlined text-white/20" style="font-size: 20px;">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Group: Security -->
+<div class="flex flex-col gap-3">
+<h3 class="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider">Security</h3>
+<div class="glass-panel rounded-2xl flex flex-col overflow-hidden">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/5 last:border-0">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-emerald-400" style="font-size: 20px;">face</span>
+</div>
+<span class="text-white/90 font-medium">Face ID</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+</label>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-orange-400" style="font-size: 20px;">lock</span>
+</div>
+<span class="text-white/90 font-medium">Change PIN</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-white/20" style="font-size: 20px;">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Group: Data -->
+<div class="flex flex-col gap-3">
+<h3 class="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider">Data</h3>
+<div class="glass-panel rounded-2xl flex flex-col overflow-hidden">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer group border-b border-white/5 last:border-0">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-xl bg-gradient-to-br from-[#2c2020] to-[#1a1010] flex items-center justify-center shadow-inner ring-1 ring-white/5">
+<span class="material-symbols-outlined text-blue-400" style="font-size: 20px;">download</span>
+</div>
+<span class="text-white/90 font-medium">Export CSV</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Logout -->
+<button class="glass-panel rounded-2xl p-4 w-full flex items-center justify-center gap-2 text-primary hover:bg-primary/10 transition-colors mt-2 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">logout</span>
+<span class="font-bold">Log Out</span>
+</button>
+<!-- Copyright -->
+<div class="text-center pb-8 pt-4">
+<p class="text-white/20 text-xs font-medium">Version 2.4.0</p>
+</div>
+</main>
+<!-- Floating Dock Navigation -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-dock rounded-full px-2 py-2 flex items-center gap-2 z-50">
+<button class="size-12 rounded-full flex flex-col items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined" style="font-size: 24px;">home</span>
+</button>
+<button class="size-12 rounded-full flex flex-col items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined" style="font-size: 24px;">pie_chart</span>
+</button>
+<button class="size-12 rounded-full flex flex-col items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined" style="font-size: 24px;">add_circle</span>
+</button>
+<button class="size-12 rounded-full flex flex-col items-center justify-center text-white bg-primary shadow-[0_0_15px_rgba(211,80,80,0.4)]">
+<span class="material-symbols-outlined fill-current" style="font-size: 24px; font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+</div>
+</div>
+</body></html>

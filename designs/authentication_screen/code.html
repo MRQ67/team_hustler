@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Authentication Screen</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d35050",
+                        "accent": "#F9E7B2",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1f1313",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(40, 40, 40, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #d35050;
+            outline: none;
+            box-shadow: 0 0 0 1px #d35050;
+        }
+
+        /* Animated Background Gradients */
+        .ambient-glow-1 {
+            background: radial-gradient(circle, #d35050 0%, transparent 70%);
+            opacity: 0.25;
+            filter: blur(60px);
+        }
+        
+        .ambient-glow-2 {
+            background: radial-gradient(circle, #F9E7B2 0%, transparent 70%);
+            opacity: 0.15;
+            filter: blur(80px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-body antialiased min-h-screen flex items-center justify-center relative overflow-hidden">
+<!-- Ambient Background Elements -->
+<div class="fixed top-[-10%] left-[-10%] w-[80vw] h-[80vw] rounded-full ambient-glow-1 pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[90vw] h-[90vw] rounded-full ambient-glow-1 pointer-events-none z-0"></div>
+<div class="fixed top-[40%] right-[10%] w-[50vw] h-[50vw] rounded-full ambient-glow-2 pointer-events-none z-0"></div>
+<!-- Main Container -->
+<div class="relative z-10 w-full max-w-md px-6 py-8 flex flex-col items-center">
+<!-- Logo Area -->
+<div class="mb-8 flex flex-col items-center">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-red-900 flex items-center justify-center shadow-lg shadow-primary/20 mb-4">
+<span class="material-symbols-outlined text-white !text-3xl">account_balance_wallet</span>
+</div>
+<h1 class="text-white font-display text-3xl font-bold tracking-tight text-center">Welcome Back</h1>
+<p class="text-white/60 font-body text-base mt-2 text-center max-w-[280px]">Manage your expenses seamlessly and securely.</p>
+</div>
+<!-- Glass Form Card -->
+<div class="w-full glass-panel rounded-3xl p-6 sm:p-8">
+<form action="#" class="flex flex-col gap-5" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="text-white/80 text-sm font-medium font-display ml-1">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-white/40 group-focus-within:text-primary transition-colors !text-[20px]">mail</span>
+</div>
+<input class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder:text-white/30 transition-all duration-300" placeholder="name@example.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-2">
+<label class="text-white/80 text-sm font-medium font-display ml-1">Password</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-white/40 group-focus-within:text-primary transition-colors !text-[20px]">lock</span>
+</div>
+<input class="glass-input w-full rounded-xl py-3.5 pl-11 pr-11 text-sm placeholder:text-white/30 transition-all duration-300" placeholder="Enter your password" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined !text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Forgot Password -->
+<div class="flex justify-end">
+<a class="text-primary text-sm font-medium hover:text-red-400 transition-colors" href="#">Forgot Password?</a>
+</div>
+<!-- Login Button -->
+<button class="mt-2 w-full bg-primary hover:bg-red-600 text-white font-display font-bold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all active:scale-[0.98]" type="button">
+                    Log In
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative flex py-6 items-center">
+<div class="flex-grow border-t border-white/10"></div>
+<span class="flex-shrink-0 mx-4 text-white/40 text-xs font-medium uppercase tracking-wider">Or continue with</span>
+<div class="flex-grow border-t border-white/10"></div>
+</div>
+<!-- Social Login -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 transition-colors group" type="button">
+<!-- Google SVG Icon -->
+<svg class="w-5 h-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z" fill="#4285F4"></path>
+<path d="M12.2401 24.0008C15.4766 24.0008 18.2059 22.9382 20.1945 21.1039L16.3275 18.1055C15.2517 18.8375 13.8627 19.252 12.2445 19.252C9.11388 19.252 6.45946 17.1399 5.50705 14.3003H1.5166V17.3912C3.55371 21.4434 7.7029 24.0008 12.2401 24.0008Z" fill="#34A853"></path>
+<path d="M5.50253 14.3003C5.00236 12.8099 5.00236 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z" fill="#FBBC05"></path>
+<path d="M12.2401 4.74966C13.9509 4.7232 15.6044 5.36697 16.8434 6.54867L20.2695 3.12262C18.1001 1.0855 15.2208 -0.034466 12.2401 0.000808666C7.7029 0.000808666 3.55371 2.55822 1.5166 6.61481L5.50264 9.70575C6.45064 6.86173 9.10947 4.74966 12.2401 4.74966Z" fill="#EA4335"></path>
+</svg>
+<span class="text-white text-sm font-medium">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 transition-colors group" type="button">
+<!-- Apple SVG Icon -->
+<svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.05 20.28C15.93 21.89 14.7 21.87 13.56 21.43C12.39 20.97 11.27 20.96 10.15 21.45C9.09999 21.89 8.19999 21.87 7.02999 20.08C4.59999 16.54 2.82999 11.08 6.84999 9.07001C7.94999 8.54001 9.08999 8.84001 9.87999 8.84001C10.63 8.84001 11.96 7.91001 13.27 8.01001C14.93 8.13001 15.96 8.76001 16.57 9.66001C13.22 11.7 13.91 16.32 17.06 17.65C16.92 18.59 16.48 19.49 15.86 20.28H17.05ZM12.03 7.24001C12.64 6.47001 13.06 5.43001 12.94 4.38001C11.98 4.49001 10.87 5.04001 10.21 5.86001C9.56999 6.62001 9.10999 7.69001 9.25999 8.71001C10.27 8.79001 11.35 8.07001 12.03 7.24001Z"></path>
+</svg>
+<span class="text-white text-sm font-medium">Apple</span>
+</button>
+</div>
+<!-- Biometric Quick Login -->
+<div class="mt-6 flex justify-center">
+<button aria-label="Login with FaceID" class="w-12 h-12 rounded-full border border-primary/30 hover:bg-primary/10 flex items-center justify-center transition-colors text-primary">
+<span class="material-symbols-outlined">face_unlock</span>
+</button>
+</div>
+</div>
+<!-- Footer Sign Up -->
+<div class="mt-8 text-center">
+<p class="text-white/60 text-sm font-body">Don't have an account? <a class="text-primary font-bold hover:text-red-400 transition-colors ml-1" href="#">Sign Up</a></p>
+</div>
+</div>
+</body></html>

@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,10 +11,15 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../../providers/AuthProvider';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import GlassPane from '../../components/GlassPane';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { signIn } = useAuth();
@@ -32,7 +36,6 @@ const LoginPage = () => {
       const result = await signIn(email, password);
       
       if (result.success) {
-        // Login successful, user will be redirected by the layout
         router.push('/(tabs)/');
       } else {
         Alert.alert('Login Failed', result.error || 'An error occurred');
@@ -44,145 +47,133 @@ const LoginPage = () => {
     }
   };
 
-  const handleForgotPassword = () => {
-    router.push('/auth/forgot-password');
-  };
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
-        
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+    <ScreenWrapper scroll={false} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1 justify-center px-6"
+      >
+        {/* Logo Area */}
+        <View className="mb-8 items-center">
+          <LinearGradient
+            colors={['#D34E4E', '#7f1d1d']}
+            className="w-16 h-16 rounded-2xl items-center justify-center mb-4 shadow-lg shadow-primary/20"
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <MaterialIcons name="account-balance-wallet" size={32} color="white" />
+          </LinearGradient>
+          <Text className="text-white font-display text-3xl font-bold tracking-tight text-center">Welcome Back</Text>
+          <Text className="text-white/60 font-body text-base mt-2 text-center max-w-[280px]">
+            Manage your expenses seamlessly and securely.
+          </Text>
         </View>
-        
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Enter your password"
-            secureTextEntry
-            autoCapitalize="none"
-          />
-        </View>
-        
-        <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.button, loading && styles.disabledButton]} 
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Log In</Text>
-          )}
-        </TouchableOpacity>
-        
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('/auth/sign-up')}>
-            <Text style={styles.linkText}> Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </KeyboardAvoidingView>
+
+        {/* Glass Form Card */}
+        <GlassPane className="w-full rounded-3xl p-6 sm:p-8">
+          <View className="flex flex-col gap-5">
+            {/* Email Field */}
+            <View className="flex flex-col gap-2">
+              <Text className="text-white/80 text-sm font-medium font-display ml-1">Email Address</Text>
+              <View className="relative">
+                <View className="absolute inset-y-0 left-0 pl-4 justify-center pointer-events-none z-10">
+                  <MaterialIcons name="mail-outline" size={20} color="rgba(255,255,255,0.4)" />
+                </View>
+                <TextInput
+                  className="bg-white/5 border border-white/10 text-white w-full rounded-xl py-3.5 pl-11 pr-4 text-sm focus:border-primary focus:bg-white/10"
+                  placeholder="name@example.com"
+                  placeholderTextColor="rgba(255,255,255,0.3)"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+            </View>
+
+            {/* Password Field */}
+            <View className="flex flex-col gap-2">
+              <Text className="text-white/80 text-sm font-medium font-display ml-1">Password</Text>
+              <View className="relative">
+                <View className="absolute inset-y-0 left-0 pl-4 justify-center pointer-events-none z-10">
+                  <MaterialIcons name="lock-outline" size={20} color="rgba(255,255,255,0.4)" />
+                </View>
+                <TextInput
+                  className="bg-white/5 border border-white/10 text-white w-full rounded-xl py-3.5 pl-11 pr-11 text-sm focus:border-primary focus:bg-white/10"
+                  placeholder="Enter your password"
+                  placeholderTextColor="rgba(255,255,255,0.3)"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity 
+                  className="absolute inset-y-0 right-0 pr-4 justify-center"
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="rgba(255,255,255,0.4)" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Forgot Password */}
+            <View className="flex-row justify-end">
+              <TouchableOpacity onPress={() => router.push('/auth/forgot-password')}>
+                <Text className="text-primary text-sm font-medium">Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Login Button */}
+            <TouchableOpacity 
+              className={`w-full bg-primary py-4 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] items-center mt-2 ${loading ? 'opacity-70' : ''}`}
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text className="text-white font-display font-bold text-base">Log In</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* Divider */}
+          <View className="flex-row items-center py-6">
+            <View className="flex-1 h-px bg-white/10" />
+            <Text className="mx-4 text-white/40 text-xs font-medium uppercase tracking-wider">Or continue with</Text>
+            <View className="flex-1 h-px bg-white/10" />
+          </View>
+
+          {/* Social Login */}
+          <View className="flex-row gap-4">
+            <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 active:bg-white/10">
+              <AntDesign name="google" size={20} color="white" />
+              <Text className="text-white text-sm font-medium">Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-1 flex-row items-center justify-center gap-2 bg-white/5 border border-white/10 rounded-xl py-3 active:bg-white/10">
+              <AntDesign name="apple1" size={20} color="white" />
+              <Text className="text-white text-sm font-medium">Apple</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Biometric Quick Login */}
+          <View className="mt-6 flex-row justify-center">
+            <TouchableOpacity className="w-12 h-12 rounded-full border border-primary/30 items-center justify-center active:bg-primary/10">
+              <MaterialIcons name="face" size={24} color="#D34E4E" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Footer Sign Up */}
+          <View className="mt-8 flex-row justify-center">
+            <Text className="text-white/60 text-sm font-body">Don't have an account? </Text>
+            <TouchableOpacity onPress={() => router.push('/auth/sign-up')}>
+              <Text className="text-primary font-bold ml-1">Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </GlassPane>
+      </KeyboardAvoidingView>
+    </ScreenWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  formContainer: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 5,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 30,
-    color: '#666',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 20,
-  },
-  forgotPasswordText: {
-    color: '#4F46E5',
-    fontWeight: '600',
-  },
-  button: {
-    backgroundColor: '#4F46E5',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  disabledButton: {
-    backgroundColor: '#a5b4fc',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  footerText: {
-    color: '#666',
-  },
-  linkText: {
-    color: '#4F46E5',
-    fontWeight: '600',
-  },
-});
 
 export default LoginPage;

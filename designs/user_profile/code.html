@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d35050",
+                        "accent": "#F9E7B2",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1f1313",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-surface": "rgba(255, 255, 255, 0.05)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem", // rounded-md
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card-hover:active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(211, 80, 80, 0.3);
+        }
+
+        /* Gradient Orbs for Background */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        
+        /* Floating Dock Animation */
+        .floating-dock-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .floating-dock-item:active {
+            transform: scale(0.95);
+        }
+        
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-50 relative overflow-hidden selection:bg-primary selection:text-white">
+<!-- Background Ambience -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+<div class="orb w-96 h-96 bg-primary top-[-10%] left-[-10%] opacity-20 dark:opacity-30"></div>
+<div class="orb w-80 h-80 bg-[#5f3a3a] bottom-[20%] right-[-10%] opacity-20 dark:opacity-20"></div>
+<div class="orb w-64 h-64 bg-primary top-[40%] left-[20%] opacity-10"></div>
+</div>
+<!-- Main Container -->
+<div class="relative z-10 flex flex-col h-full min-h-screen w-full max-w-md mx-auto pb-28">
+<!-- Top App Bar -->
+<header class="flex items-center justify-between p-6 pt-12">
+<button class="flex items-center justify-center w-10 h-10 rounded-full glass-panel hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white text-[20px]">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight text-white/90">My Profile</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full glass-panel hover:bg-white/10 transition-colors text-primary">
+<span class="material-symbols-outlined text-[20px] text-[#d35050]">settings</span>
+</button>
+</header>
+<!-- Profile Header -->
+<div class="px-6 flex flex-col items-center">
+<div class="relative">
+<div class="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-primary to-[#5f3a3a] shadow-lg shadow-primary/20">
+<div class="w-full h-full rounded-full bg-cover bg-center border-4 border-[#1f1313]" data-alt="Portrait of a young man smiling in a professional setting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA_VUcprIFJm4xriGLUzSbuPgk2FIuURNHBKxaFY16V-hOVLaCzHUuc9xPUXF48exgertOXY9PfM0wlG-gz4lFnTPXJmrXidlG2odshnxY_mn70pH8MxG-GSMTYUwXGxtcyHpFStML5AJ3Ag52tR6bY9bQmHMcmd3V_CV6n7CuGHh3G-K9x8cBPKcPHhGWpDGDcY8A393LD0c3_58JqE7kPLRYeMqoF_oirQ2y9bqTKerD2KR7apz-RojBRQf8UQLWloBaaO6GDOpnL');">
+</div>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-[#1f1313] flex items-center gap-1 shadow-sm">
+                    PRO
+                </div>
+</div>
+<div class="mt-4 text-center">
+<h2 class="text-2xl font-bold text-white">Alex Morgan</h2>
+<p class="text-white/50 text-sm mt-1 font-medium">alex.morgan@finance.app</p>
+</div>
+<button class="mt-5 px-6 py-2 rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 transition active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                Edit Profile
+            </button>
+</div>
+<!-- Stats Section -->
+<div class="px-6 mt-8">
+<div class="flex gap-3">
+<div class="flex-1 glass-panel rounded-xl p-4 flex flex-col items-center justify-center gap-1 group cursor-pointer transition-all hover:bg-white/5">
+<span class="text-xs font-medium text-white/50 uppercase tracking-wider">Spend</span>
+<span class="text-xl font-bold text-white">$2,450</span>
+<div class="w-full bg-white/10 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full w-[65%] rounded-full"></div>
+</div>
+</div>
+<div class="flex-1 glass-panel rounded-xl p-4 flex flex-col items-center justify-center gap-1 group cursor-pointer transition-all hover:bg-white/5">
+<span class="text-xs font-medium text-white/50 uppercase tracking-wider">Savings</span>
+<span class="text-xl font-bold text-white">$12,800</span>
+<div class="w-full bg-white/10 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#F9E7B2] h-full w-[85%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Menu Groups -->
+<div class="px-6 mt-8 flex flex-col gap-6">
+<!-- Account Settings -->
+<div class="flex flex-col gap-3">
+<h3 class="text-xs font-bold text-white/40 uppercase tracking-widest px-1">Account</h3>
+<div class="glass-panel rounded-2xl overflow-hidden flex flex-col divide-y divide-white/5">
+<button class="w-full flex items-center justify-between p-4 glass-card-hover transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-semibold text-white">Personal Information</p>
+<p class="text-xs text-white/40">Name, Email, Phone</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-white/30 text-[20px]">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 glass-card-hover transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-semibold text-white">Linked Cards &amp; Banks</p>
+<p class="text-xs text-white/40">2 Cards, 1 Bank Account</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-white/30 text-[20px]">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 glass-card-hover transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-semibold text-white">Subscription</p>
+<p class="text-xs text-white/40">Pro Member Plan</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-white/30 text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- App Settings -->
+<div class="flex flex-col gap-3">
+<h3 class="text-xs font-bold text-white/40 uppercase tracking-widest px-1">App Settings</h3>
+<div class="glass-panel rounded-2xl overflow-hidden flex flex-col divide-y divide-white/5">
+<button class="w-full flex items-center justify-between p-4 glass-card-hover transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-semibold text-white">Notifications</p>
+</div>
+</div>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-transparent appearance-none cursor-pointer translate-x-5 transition-transform duration-200 ease-in-out checked:translate-x-0" id="toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary cursor-pointer" for="toggle"></label>
+</div>
+</button>
+<button class="w-full flex items-center justify-between p-4 glass-card-hover transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">security</span>
+</div>
+<div class="text-left">
+<p class="text-sm font-semibold text-white">Security &amp; FaceID</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-white/30 text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Sign Out -->
+<button class="glass-panel rounded-2xl p-4 flex items-center justify-center gap-2 text-primary hover:bg-primary/10 transition-colors w-full mb-4">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-semibold text-sm">Log Out</span>
+</button>
+<p class="text-center text-xs text-white/20 pb-4">Version 2.4.0 (Build 302)</p>
+</div>
+</div>
+<!-- Floating Dock Navigation -->
+<div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
+<div class="glass-panel rounded-full px-2 py-2 flex items-center gap-1 shadow-2xl shadow-black/40 border border-white/10">
+<a class="floating-dock-item w-12 h-12 flex items-center justify-center rounded-full text-white/50 hover:bg-white/10 hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</a>
+<a class="floating-dock-item w-12 h-12 flex items-center justify-center rounded-full text-white/50 hover:bg-white/10 hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">pie_chart</span>
+</a>
+<div class="relative -top-6 mx-2">
+<button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/40 text-white transform hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+</div>
+<a class="floating-dock-item w-12 h-12 flex items-center justify-center rounded-full text-white/50 hover:bg-white/10 hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">credit_card</span>
+</a>
+<a class="floating-dock-item w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary ring-2 ring-primary/20" href="#">
+<span class="material-symbols-outlined text-[24px] fill-current">person</span>
+</a>
+</div>
+</div>
+</body></html>

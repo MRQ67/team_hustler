@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transactions Log</title>
+<!-- Google Fonts: Manrope (Theme) and DM Sans (Requested Aesthetic) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#D34E4E", // Updated to match request
+                        "primary-dark": "#b03a3a",
+                        "accent": "#F9E7B2",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-surface": "rgba(255, 255, 255, 0.03)",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#121212", // Deeper dark for glassmorphism
+                    },
+                    fontFamily: {
+                        "display": ["DM Sans", "Manrope", "sans-serif"], // Prioritize DM Sans
+                        "body": ["DM Sans", "Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "1rem", // Softer corners
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
+                        'accent-glow': 'radial-gradient(circle at 50% 50%, rgba(249, 231, 178, 0.15), transparent 70%)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-dock {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-chip-active {
+            background: rgba(211, 78, 78, 0.2); /* Primary with opacity */
+            border: 1px solid rgba(211, 78, 78, 0.4);
+            color: #fff;
+        }
+
+        /* Hide scrollbar for clean horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white selection:bg-primary selection:text-white antialiased">
+<!-- Ambient Background Glows -->
+<div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/20 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#2a1a1a] blur-[100px]"></div>
+<div class="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-accent/5 blur-[80px]"></div>
+</div>
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-32">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 pt-12 pb-2 z-20 sticky top-0 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
+<h1 class="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">Transactions</h1>
+<div class="glass-chip px-4 py-2 rounded-full flex items-center gap-2 cursor-pointer hover:bg-white/10 transition-colors">
+<span class="text-sm font-medium text-accent">Oct 2023</span>
+<span class="material-symbols-outlined text-accent text-lg">expand_more</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-col px-4 pt-6 gap-6">
+<!-- Filter Chips -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
+<button class="glass-chip-active h-10 px-6 rounded-xl shrink-0 flex items-center justify-center transition-all">
+<span class="text-sm font-medium">All</span>
+</button>
+<button class="glass-chip h-10 px-6 rounded-xl shrink-0 flex items-center justify-center hover:bg-white/10 transition-all">
+<span class="text-sm font-medium text-white/70">Food</span>
+</button>
+<button class="glass-chip h-10 px-6 rounded-xl shrink-0 flex items-center justify-center hover:bg-white/10 transition-all">
+<span class="text-sm font-medium text-white/70">Transport</span>
+</button>
+<button class="glass-chip h-10 px-6 rounded-xl shrink-0 flex items-center justify-center hover:bg-white/10 transition-all">
+<span class="text-sm font-medium text-white/70">Shopping</span>
+</button>
+<button class="glass-chip h-10 px-6 rounded-xl shrink-0 flex items-center justify-center hover:bg-white/10 transition-all">
+<span class="text-sm font-medium text-white/70">Bills</span>
+</button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Large Summary Card (Spans 2 columns) -->
+<div class="col-span-2 glass-panel rounded-3xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-30 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">analytics</span>
+</div>
+<p class="text-white/60 text-sm font-medium mb-1">Total Spent</p>
+<h2 class="text-4xl font-bold text-white mb-4 tracking-tight">$1,240.50</h2>
+<div class="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-2">
+<div class="h-full bg-primary w-[75%] rounded-full shadow-[0_0_10px_rgba(211,78,78,0.5)]"></div>
+</div>
+<div class="flex justify-between items-center text-xs text-white/50">
+<span>$2,500 Limit</span>
+<span class="text-accent">+12% vs last month</span>
+</div>
+</div>
+<!-- Today's Highlight (Spans 2 columns on mobile for better readability) -->
+<div class="col-span-2 mt-2">
+<h3 class="text-white/80 text-lg font-bold mb-3 px-1">Today</h3>
+<div class="flex flex-col gap-3">
+<!-- Transaction Item 1 -->
+<div class="glass-panel rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400/20 to-orange-600/20 flex items-center justify-center text-orange-400 border border-orange-400/10">
+<span class="material-symbols-outlined">coffee</span>
+</div>
+<div>
+<p class="font-bold text-base">Starbucks</p>
+<p class="text-xs text-white/50">Coffee • 9:41 AM</p>
+</div>
+</div>
+<span class="font-bold text-primary">-$5.50</span>
+</div>
+<!-- Transaction Item 2 -->
+<div class="glass-panel rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/20 to-blue-600/20 flex items-center justify-center text-blue-400 border border-blue-400/10">
+<span class="material-symbols-outlined">local_taxi</span>
+</div>
+<div>
+<p class="font-bold text-base">Uber</p>
+<p class="text-xs text-white/50">Transport • 8:15 AM</p>
+</div>
+</div>
+<span class="font-bold text-primary">-$15.20</span>
+</div>
+</div>
+</div>
+<!-- Visual Block: Yesterday's Spending Chart (Spans 1 column) -->
+<div class="glass-panel rounded-3xl p-5 flex flex-col justify-between aspect-square mt-2 relative overflow-hidden" data-alt="abstract gradient representing spending trends">
+<!-- Simple CSS-only bar chart visualization -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 z-0"></div>
+<div class="relative z-10">
+<p class="text-white/60 text-xs font-bold uppercase tracking-wider mb-2">Yesterday</p>
+<p class="text-2xl font-bold text-white">$103.99</p>
+</div>
+<div class="flex items-end justify-between h-16 gap-1 relative z-10">
+<div class="w-full bg-white/10 rounded-sm h-[40%]"></div>
+<div class="w-full bg-primary/80 rounded-sm h-[80%] shadow-[0_0_8px_rgba(211,78,78,0.4)]"></div>
+<div class="w-full bg-white/10 rounded-sm h-[30%]"></div>
+<div class="w-full bg-white/10 rounded-sm h-[50%]"></div>
+</div>
+</div>
+<!-- Visual Block: Category Focus (Spans 1 column) -->
+<div class="glass-panel rounded-3xl p-5 flex flex-col justify-between aspect-square mt-2 bg-gradient-to-br from-white/5 to-white/0">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 border border-green-500/10">
+<span class="material-symbols-outlined text-xl">shopping_bag</span>
+</div>
+<span class="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-md font-bold">+20%</span>
+</div>
+<div>
+<p class="text-white/60 text-xs font-medium">Top Category</p>
+<p class="text-lg font-bold">Groceries</p>
+</div>
+</div>
+<!-- Yesterday's List -->
+<div class="col-span-2 mt-2">
+<div class="flex flex-col gap-3">
+<!-- Transaction Item 3 -->
+<div class="glass-panel rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400/20 to-green-600/20 flex items-center justify-center text-green-400 border border-green-400/10">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div>
+<p class="font-bold text-base">Whole Foods</p>
+<p class="text-xs text-white/50">Groceries • 6:30 PM</p>
+</div>
+</div>
+<span class="font-bold text-primary">-$89.00</span>
+</div>
+<!-- Transaction Item 4 -->
+<div class="glass-panel rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-400/20 to-red-600/20 flex items-center justify-center text-red-400 border border-red-400/10">
+<span class="material-symbols-outlined">movie</span>
+</div>
+<div>
+<p class="font-bold text-base">Netflix</p>
+<p class="text-xs text-white/50">Subscription • Auto</p>
+</div>
+</div>
+<span class="font-bold text-primary">-$14.99</span>
+</div>
+</div>
+</div>
+<!-- Income Highlight (Spans 2 columns) -->
+<div class="col-span-2 mt-2">
+<div class="glass-panel rounded-2xl p-5 flex items-center justify-between bg-gradient-to-r from-accent/5 to-transparent border-accent/20">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent border border-accent/20 shadow-[0_0_15px_rgba(249,231,178,0.2)]">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="font-bold text-base text-accent">Freelance Payment</p>
+<p class="text-xs text-white/50">Income • Oct 12</p>
+</div>
+</div>
+<span class="font-bold text-accent text-lg">+$1,500.00</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Dock Navigation -->
+<div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-[340px] px-4">
+<nav class="glass-dock h-16 rounded-2xl flex items-center justify-between px-6">
+<button class="flex flex-col items-center justify-center gap-1 w-10 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors text-2xl">home</span>
+<span class="w-1 h-1 rounded-full bg-transparent group-hover:bg-accent transition-colors"></span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 group">
+<span class="material-symbols-outlined text-white group-hover:text-primary transition-colors text-2xl font-bold shadow-[0_0_10px_rgba(255,255,255,0.2)]">receipt_long</span>
+<span class="w-1 h-1 rounded-full bg-primary"></span>
+</button>
+<!-- Floating FAB style Add Button -->
+<button class="relative -top-6 bg-primary hover:bg-primary-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-[0_8px_20px_rgba(211,78,78,0.4)] border-4 border-background-dark transition-transform active:scale-95">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors text-2xl">bar_chart</span>
+<span class="w-1 h-1 rounded-full bg-transparent group-hover:bg-accent transition-colors"></span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 group">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors text-2xl">settings</span>
+<span class="w-1 h-1 rounded-full bg-transparent group-hover:bg-accent transition-colors"></span>
+</button>
+</nav>
+</div>
+</div>
+</body></html>

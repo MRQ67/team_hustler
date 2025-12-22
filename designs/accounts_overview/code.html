@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Accounts Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#d35050",
+                        "accent": "#F9E7B2",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1f1313",
+                        "glass-surface": "rgba(255, 255, 255, 0.05)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
+                        "dock": "0 10px 40px -10px rgba(0, 0, 0, 0.5)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom glassmorphism utilities */
+        .glass {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-dock {
+            background: rgba(30, 20, 20, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Ambient background glow */
+        .ambient-glow-1 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: #d35050;
+            filter: blur(120px);
+            opacity: 0.2;
+            top: -50px;
+            left: -100px;
+            z-index: 0;
+            border-radius: 50%;
+        }
+        
+        .ambient-glow-2 {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: #F9E7B2;
+            filter: blur(100px);
+            opacity: 0.1;
+            bottom: 20%;
+            right: -50px;
+            z-index: 0;
+            border-radius: 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display antialiased selection:bg-primary/30 selection:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-[#120d0d] overflow-x-hidden text-slate-900 dark:text-white pb-32">
+<!-- Ambient Background Effects -->
+<div class="ambient-glow-1 pointer-events-none fixed"></div>
+<div class="ambient-glow-2 pointer-events-none fixed"></div>
+<!-- Header Section -->
+<header class="relative z-10 flex items-center justify-between p-6 pt-8">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center justify-center size-10 rounded-full border border-white/20 overflow-hidden shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="User profile avatar portrait" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDmpvdiUDcMumsHcXecsCKlaZN37m13ouQCK9SlDgJAZPA5XS6Z5JW2a3ad-EDZG9ihq4yJ8FEG0tewO-Zm1jipLCo8bo-17AAJfpdgBSU39_87cWbE2GF3h5jMdhE2maAXvzxdJp1AQ5NWfSzJyqBQziu_c8G814KG3ulg4k9LbeVrXSznscwK6ZTC6OJBeUDHkmn8xmBIOYxRH7kF5b78AisfGv6E1w_SsfDGH3jTgNnh2LwKsqqQFYDGaSM8t8fPMV1QSLjxXvK");'></div>
+</div>
+<div class="flex flex-col">
+<span class="text-white/60 text-xs font-medium uppercase tracking-wider">Welcome back</span>
+<span class="text-white text-sm font-bold">Alex Morgan</span>
+</div>
+</div>
+<button class="relative flex items-center justify-center size-10 rounded-full glass hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">notifications</span>
+<span class="absolute top-2.5 right-2.5 size-2 bg-primary rounded-full border border-[#1f1313]"></span>
+</button>
+</header>
+<!-- Net Worth Section -->
+<section class="relative z-10 px-6 mb-8">
+<div class="flex flex-col">
+<p class="text-accent/80 text-sm font-medium tracking-wide uppercase mb-1">Total Net Worth</p>
+<div class="flex items-baseline gap-2">
+<h1 class="text-white text-5xl font-bold tracking-tight">$12,450<span class="text-white/40 text-3xl">.00</span></h1>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex items-center justify-center px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30">
+<span class="material-symbols-outlined text-green-400 text-sm mr-1">trending_up</span>
+<span class="text-green-400 text-xs font-bold">+2.4%</span>
+</div>
+<span class="text-white/40 text-xs font-medium">vs last month</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<main class="relative z-10 px-6 flex flex-col gap-4">
+<!-- Row 1: Main Checking (Large Card) -->
+<div class="w-full glass rounded-2xl p-5 shadow-glass group hover:bg-white/[0.08] transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-white">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-white/60 text-xs font-medium uppercase">Checking</p>
+<p class="text-white text-base font-bold">Main Checking</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors">arrow_forward</span>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-3xl font-bold text-white tracking-tight">$4,200.50</p>
+<p class="text-white/40 text-xs mt-1">**** 8842</p>
+</div>
+<!-- Abstract Sparkline -->
+<div class="h-10 w-24 flex items-end gap-1">
+<div class="w-full bg-primary/20 h-[40%] rounded-t-sm"></div>
+<div class="w-full bg-primary/40 h-[60%] rounded-t-sm"></div>
+<div class="w-full bg-primary/30 h-[30%] rounded-t-sm"></div>
+<div class="w-full bg-primary/60 h-[80%] rounded-t-sm"></div>
+<div class="w-full bg-primary h-[50%] rounded-t-sm"></div>
+<div class="w-full bg-accent h-[75%] rounded-t-sm shadow-[0_0_10px_rgba(249,231,178,0.5)]"></div>
+</div>
+</div>
+</div>
+<!-- Row 2: Two Columns -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Savings Card -->
+<div class="glass rounded-2xl p-5 shadow-glass flex flex-col justify-between h-48 relative overflow-hidden">
+<div class="absolute -right-6 -top-6 size-24 bg-accent/20 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start">
+<div class="size-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-sm">savings</span>
+</div>
+<div class="px-2 py-0.5 rounded-full bg-white/10 border border-white/10">
+<span class="text-[10px] text-accent font-bold">Goal 60%</span>
+</div>
+</div>
+<div class="mt-4">
+<p class="text-white/60 text-xs font-medium uppercase mb-1">Emergency Fund</p>
+<p class="text-xl font-bold text-white tracking-tight">$8,000</p>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1.5 bg-white/10 rounded-full mt-2 overflow-hidden">
+<div class="h-full w-[60%] bg-accent rounded-full shadow-[0_0_8px_rgba(249,231,178,0.6)]"></div>
+</div>
+</div>
+<!-- Crypto/Investments -->
+<div class="glass rounded-2xl p-5 shadow-glass flex flex-col justify-between h-48">
+<div class="flex justify-between items-start">
+<div class="size-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-300">
+<span class="material-symbols-outlined text-sm">currency_bitcoin</span>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm">more_horiz</span>
+</div>
+<div class="flex-1 flex items-center justify-center py-2">
+<!-- Simple Donut Chart Representation -->
+<div class="relative size-16 rounded-full border-[3px] border-white/10 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[3px] border-purple-400 border-t-transparent border-l-transparent rotate-45"></div>
+<span class="material-symbols-outlined text-purple-300">trending_up</span>
+</div>
+</div>
+<div>
+<p class="text-white/60 text-xs font-medium uppercase mb-1">Crypto Wallet</p>
+<p class="text-xl font-bold text-white tracking-tight">$699.50</p>
+</div>
+</div>
+</div>
+<!-- Row 3: Credit Card & Debt -->
+<div class="w-full glass rounded-2xl p-5 shadow-glass flex items-center justify-between border-l-4 border-l-primary">
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center justify-center size-12 bg-black/40 rounded-lg border border-white/10">
+<span class="text-[10px] font-bold text-white/80 tracking-widest uppercase">Visa</span>
+</div>
+<div>
+<p class="text-white text-base font-bold">Visa Black</p>
+<p class="text-primary text-sm font-medium">Due in 3 days</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white text-lg font-bold">-$450.00</p>
+<button class="text-[10px] font-bold uppercase tracking-wider text-white/60 hover:text-white mt-1 flex items-center justify-end gap-1">
+                        Pay Now <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Row 4: Quick Actions (Horizontal Scroll) -->
+<div class="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6 no-scrollbar">
+<button class="flex items-center gap-2 pl-3 pr-5 py-3 rounded-xl bg-white/5 border border-white/10 whitespace-nowrap active:scale-95 transition-transform">
+<div class="size-8 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-white text-sm">add</span>
+</div>
+<span class="text-white text-sm font-medium">Add Account</span>
+</button>
+<button class="flex items-center gap-2 pl-3 pr-5 py-3 rounded-xl bg-white/5 border border-white/10 whitespace-nowrap active:scale-95 transition-transform">
+<div class="size-8 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">swap_horiz</span>
+</div>
+<span class="text-white text-sm font-medium">Transfer</span>
+</button>
+<button class="flex items-center gap-2 pl-3 pr-5 py-3 rounded-xl bg-white/5 border border-white/10 whitespace-nowrap active:scale-95 transition-transform">
+<div class="size-8 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">qr_code_scanner</span>
+</div>
+<span class="text-white text-sm font-medium">Scan</span>
+</button>
+</div>
+</main>
+<!-- Floating Dock Navigation -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-auto max-w-[90%]">
+<nav class="glass-dock rounded-2xl px-2 py-2 flex items-center gap-1 shadow-dock">
+<a class="relative flex flex-col items-center justify-center size-12 rounded-xl bg-white/10 text-white" href="#">
+<span class="material-symbols-outlined filled" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<!-- Active Indicator -->
+<span class="absolute -bottom-1 size-1 bg-primary rounded-full shadow-[0_0_8px_#d35050]"></span>
+</a>
+<a class="flex flex-col items-center justify-center size-12 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">pie_chart</span>
+</a>
+<div class="w-px h-6 bg-white/10 mx-1"></div>
+<a class="flex flex-col items-center justify-center size-12 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center size-12 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+</div>
+</div>
+</body></html>
