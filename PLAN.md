@@ -209,6 +209,7 @@ This section defines the **complete and necessary feature set** for the Finance 
 - RLS on all tables
 - App-level auth checks
 - Optional app lock (PIN/biometric)
+- SMS permissions for Android (READ_SMS, RECEIVE_SMS) with user consent
 
 ### 13. Data Management
 - Cloud storage (Supabase)
@@ -220,6 +221,17 @@ This section defines the **complete and necessary feature set** for the Finance 
 - Clean UI
 - Consistent navigation
 - Clear error handling & validation
+
+### 15. SMS Parsing for Android (Automatic Transaction Tracking)
+- Automatic parsing of bank SMS notifications on Android
+- Manual transaction entry for iOS (due to platform limitations)
+- Support for major local banks (CBE, Dashen, Awash, etc.)
+- Transaction type detection (income/expense)
+- Amount and balance extraction
+- Merchant identification
+- Duplicate transaction prevention
+- User confirmation for parsed transactions
+- SMS permission handling and user prompts
 
 ---
 
@@ -239,6 +251,11 @@ This section defines the **complete and necessary feature set** for the Finance 
 - **Victory Native** or **react-native-chart-kit**
 - Pie charts for expense composition
 - Bar charts for comparison
+
+### SMS Parsing (Android Only)
+- **@maniac-tech/react-native-expo-read-sms** – SMS reading capability
+- Regex-based parsing for different bank formats
+- Local storage for offline transaction processing
 
 ### Backend
 - **Supabase** – Auth, PostgreSQL, RLS, Storage, Edge Functions
@@ -267,6 +284,7 @@ Expo (React Native)
  ├── NativeWind (UI)
  ├── Zustand (State)
  ├── Charts
+ ├── SMS Parsing (Android)
  └── SQLite (Offline)
         ↓
 Supabase
@@ -275,6 +293,25 @@ Supabase
  ├── RLS
  ├── Storage
  └── Edge Functions
+```
+
+### SMS Parsing Flow Architecture
+```txt
+Incoming SMS
+     ↓
+SMS Listener (expo-read-sms)
+     ↓
+Bank SMS Detector
+     ↓
+Bank-specific Parser (Regex)
+     ↓
+Normalized Transaction Object
+     ↓
+Transaction Validation & Deduplication
+     ↓
+Local Storage (SQLite)
+     ↓
+Sync with Supabase
 ```
 
 ---
