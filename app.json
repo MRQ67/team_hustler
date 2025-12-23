@@ -23,7 +23,8 @@
       "permissions": [
         "READ_SMS",
         "RECEIVE_SMS"
-      ]
+      ],
+      "package": "com.huslters.fintech"
     },
     "web": {
       "output": "static",
@@ -47,6 +48,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e073b10d-c652-4a83-81c8-90e59c246265"
+      }
     }
   }
 }
