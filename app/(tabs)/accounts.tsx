@@ -120,7 +120,7 @@ export default function AccountsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 -mx-6 px-6 pb-2">
           {[
             { icon: 'add', label: 'Add Account', bg: 'bg-primary', iconColor: 'white', action: () => router.push('/modal/account') },
-            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white', action: () => {} },
+            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white', action: () => router.push('/modal/transfer') },
             { icon: 'qr-code-scanner', label: 'Scan', bg: 'bg-white/10', iconColor: 'white', action: () => {} }
           ].map((action, i) => (
              <TouchableOpacity

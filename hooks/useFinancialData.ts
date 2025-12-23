@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../utils/supabase';
 import { startOfMonth, endOfMonth, formatISO } from 'date-fns';
 
@@ -66,6 +66,33 @@ export function useFinancialData() {
     loading: true,
     refetch: async () => {},
   });
+
+  // Cache for storing previously fetched data
+  const cacheRef = useRef<FinancialData | null>(null);
+
+  // Function to deep compare two objects/arrays
+  const deepEqual = (obj1: any, obj2: any): boolean => {
+    if (obj1 === obj2) return true;
+
+    if (obj1 == null || obj2 == null) return false;
+
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+      return obj1 === obj2;
+    }
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) return false;
+
+    for (let key of keys1) {
+      if (!keys2.includes(key)) return false;
+
+      if (!deepEqual(obj1[key], obj2[key])) return false;
+    }
+
+    return true;
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -278,7 +305,8 @@ export function useFinancialData() {
         analyticsData.sort((a, b) => b.amount - a.amount);
       }
 
-      setData({
+      // Create the new data object
+      const newData: FinancialData = {
         totalBalance: totalBal,
         income: monthlyIncome,
         expense: monthlyExpense,
@@ -292,7 +320,20 @@ export function useFinancialData() {
         analytics: analyticsData,
         loading: false,
         refetch: fetchData,
-      });
+      };
+
+      // Compare with cached data and only update state if different
+      if (!cacheRef.current || !deepEqual(cacheRef.current, newData)) {
+        cacheRef.current = newData;
+        setData(newData);
+      } else {
+        // Data is the same, just update loading state and refetch function
+        setData(prev => ({
+          ...prev,
+          loading: false,
+          refetch: fetchData,
+        }));
+      }
 
     } catch (error) {
       console.error('Error fetching financial data:', error);
@@ -300,9 +341,16 @@ export function useFinancialData() {
     }
   }, []);
 
+  // Initialize data on mount
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  return { ...data, refetch: fetchData };
+  // Return the cached data if available, otherwise return current state
+  // This ensures we always have data to display, even if it's slightly stale
+  return {
+    ...data,  // Current state as fallback
+    ...cacheRef.current,  // Override with cached data if available
+    refetch: fetchData
+  };
 }

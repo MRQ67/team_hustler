@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useAuth } from '../../providers/AuthProvider';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
@@ -13,6 +14,13 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const { totalBalance, income, expense, recentTransactions, budgets, loading, refetch } = useFinancialData();
+
+  // Refetch data when the screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   const onRefresh = useCallback(() => {
     refetch();
