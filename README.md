@@ -1,50 +1,168 @@
-# Welcome to your Expo app 👋
+# Finance Tracker - Cross-Platform Mobile Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A comprehensive cross-platform mobile finance tracking application built with Expo (React Native) and TypeScript. The app follows an account-based financial model where users can track income, expenses, and transfers across multiple accounts, with additional features like budgeting, analytics, and goal tracking.
 
-## Get started
+## 🚀 Features
 
-1. Install dependencies
+- **Multi-Account Management**: Track finances across different account types (Cash, Bank, Mobile Money, Card, Savings)
+- **Transaction Tracking**: Record income, expenses, and transfers between accounts
+- **Category System**: Categorize transactions for better financial analysis
+- **Analytics & Visualization**: Monthly expense breakdowns, income vs expense comparisons, and account balance charts
+- **Budgeting**: Set monthly budgets per category with alerts
+- **Savings Goals**: Create and track financial goals with progress indicators
+- **SMS Parsing (Android)**: Automatic transaction tracking through bank SMS notifications
+- **Offline Support**: View and add transactions even when offline
+- **Cross-Platform**: Works on iOS, Android, and Web
+- **Dark/Light Mode**: Adaptive UI based on system preferences
 
-   ```bash
-   npm install
-   ```
+## 🛠️ Tech Stack
 
-2. Start the app
+### Frontend
+- **Framework**: Expo (React Native) with TypeScript
+- **Routing**: Expo Router with file-based routing
+- **UI Styling**: NativeWind (Tailwind CSS for React Native)
+- **State Management**: Zustand for client-side state and Supabase client for server state
+- **Charts**: react-native-chart-kit for data visualization
+- **Offline Support**: Expo SQLite for caching and offline transactions
 
-   ```bash
-   npx expo start
-   ```
+### Backend
+- **Backend-as-a-Service**: Supabase
+- **Database**: PostgreSQL with Row Level Security (RLS)
+- **Authentication**: Supabase Auth system
+- **Storage**: Supabase Storage for receipts and icons
 
-In the output, you'll find options to open the app in a
+## 📋 Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js (recommended version compatible with Expo)
+- npm or yarn package manager
+- Android SDK (for Android development)
+- Xcode (for iOS development)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🚀 Getting Started
 
-## Get a fresh project
-
-When you're ready, run:
+### 1. Clone the repository
 
 ```bash
-npm run reset-project
+git clone <repository-url>
+cd team_hustler
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Environment Configuration
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Create a `.env` file in the root directory with your Supabase credentials:
 
-## Join the community
+```env
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-Join our community of developers creating universal apps.
+### 4. Start the development server
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start
+```
+
+### 5. Platform-specific commands
+
+- For Android: `npm run android`
+- For iOS: `npm run ios`
+- For Web: `npm run web`
+
+## 📁 Project Structure
+
+```
+team_hustler/
+├── app/                    # File-based routing structure
+│   ├── _layout.tsx         # Root layout component
+│   └── index.tsx           # Main home screen
+├── assets/                 # Static assets (images, icons)
+├── hooks/                  # Custom React hooks
+├── providers/              # Context providers (Auth, Theme, etc.)
+├── store/                  # Zustand stores
+├── utils/                  # Utility functions
+├── package.json            # Project dependencies and scripts
+├── app.json                # Expo app configuration
+├── tsconfig.json           # TypeScript configuration
+└── README.md               # Project documentation
+```
+
+## 🏗️ Architecture
+
+### Account-Based Financial Model
+
+Instead of simple income/expense entries, the app uses an **Account-Based Model**, similar to real banking and wallet systems. All money movements happen through accounts.
+
+- Users create accounts, and transactions either **add to**, **subtract from**, or **transfer between** those accounts
+- This model allows multiple accounts per user, accurate balances, realistic financial tracking, and easy expansion for budgets and savings
+
+### Transaction Types
+
+1. **Income**: Adds money to a selected account
+2. **Expense**: Subtracts money from a selected account
+3. **Transfer**: Moves money between two accounts
+
+### SMS Parsing (Android Only)
+
+For Android users, the app automatically tracks transactions by parsing bank SMS notifications:
+- Automatic parsing of bank SMS notifications on Android
+- Support for major local banks (CBE, Dashen, Awash, etc.)
+- Transaction type detection (income/expense)
+- Amount and balance extraction
+- Merchant identification
+- Duplicate transaction prevention
+- User confirmation for parsed transactions
+
+## 📊 Analytics & Visualization
+
+The app provides multiple visualization options for financial data:
+
+- **Pie Charts**: Monthly expense breakdown by category (maximum 5-6 categories for clarity)
+- **Bar Charts**: Monthly income vs expenses, account balance comparison, spending per category
+
+## 🔐 Security & Data Protection
+
+- Row Level Security (RLS) on all database tables
+- App-level authentication checks
+- Secure token storage using Expo SecureStore
+- Optional app lock (PIN/biometric) for additional security
+- SMS permissions handled with user consent on Android
+
+## 🚀 Deployment
+
+### Expo EAS Build
+
+To create production builds:
+
+```bash
+# Install EAS CLI
+npm install -g @expo/cli
+
+# Build for Android
+eas build --platform android
+
+# Build for iOS
+eas build --platform ios
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+If you have questions or need help, please open an issue in the repository.
