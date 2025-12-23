@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');

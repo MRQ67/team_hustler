@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '../../utils/supabase';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 
 export default function SavingsGoalModal() {
   const router = useRouter();
   const { user } = useAuth();
   const { refetch } = useFinancialData(); // Get refetch function to update data after savings goal creation
+  const { getCurrencySymbol } = useCurrencyStore();
   const [goalName, setGoalName] = useState('');
   const [targetAmount, setTargetAmount] = useState('0');
   const [currentAmount, setCurrentAmount] = useState('0');
@@ -128,7 +130,7 @@ export default function SavingsGoalModal() {
         <View className="gap-2">
           <Text className="text-white/60 font-medium mb-2">Target Amount</Text>
           <GlassPane className="rounded-2xl p-4 flex-row items-center">
-            <Text className="text-white/60 text-xl mr-2">$</Text>
+            <Text className="text-white/60 text-xl mr-2">{getCurrencySymbol()}</Text>
             <TextInput
               className="text-white text-xl font-display flex-1"
               placeholder="0.00"
@@ -144,7 +146,7 @@ export default function SavingsGoalModal() {
         <View className="gap-2">
           <Text className="text-white/60 font-medium mb-2">Current Amount (Optional)</Text>
           <GlassPane className="rounded-2xl p-4 flex-row items-center">
-            <Text className="text-white/60 text-xl mr-2">$</Text>
+            <Text className="text-white/60 text-xl mr-2">{getCurrencySymbol()}</Text>
             <TextInput
               className="text-white text-xl font-display flex-1"
               placeholder="0.00"

@@ -7,11 +7,13 @@ import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { PieChart } from 'react-native-chart-kit';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 
 export default function AnalyticsScreen() {
   const router = useRouter();
   const screenWidth = Dimensions.get("window").width;
   const { analytics, budgets, savingsGoals, loading, refetch } = useFinancialData();
+  const { getCurrencySymbol } = useCurrencyStore();
 
   // Refetch data when the screen comes into focus
   useFocusEffect(
@@ -73,7 +75,7 @@ export default function AnalyticsScreen() {
                           </View>
                           <View className="flex-row items-center gap-2">
                                <Text className="text-white font-bold font-display">{item.population}%</Text>
-                               <Text className="text-white/40 text-sm font-body">${item.amount.toFixed(2)}</Text>
+                               <Text className="text-white/40 text-sm font-body">{getCurrencySymbol()}{item.amount.toFixed(2)}</Text>
                           </View>
                       </GlassPane>
                   ))}
@@ -120,12 +122,12 @@ export default function AnalyticsScreen() {
                       <Text className="text-white text-base font-bold font-display">
                         {budget.category_name ? `${budget.category_name} Budget` : 'Overall Budget'}
                       </Text>
-                      <Text className="text-white/50 text-xs mt-1">Spent ${spent.toFixed(2)} of ${amount.toFixed(2)}</Text>
+                      <Text className="text-white/50 text-xs mt-1">Spent {getCurrencySymbol()}{spent.toFixed(2)} of {getCurrencySymbol()}{amount.toFixed(2)}</Text>
                     </View>
                     <View className="items-end">
                       <Text className="text-white text-lg font-bold">{percentage}%</Text>
                       <Text className={`text-xs ${remaining >= 0 ? 'text-accent' : 'text-primary'}`}>
-                        ${Math.abs(remaining).toFixed(2)} {remaining >= 0 ? 'left' : 'over'}
+                        {getCurrencySymbol()}{Math.abs(remaining).toFixed(2)} {remaining >= 0 ? 'left' : 'over'}
                       </Text>
                     </View>
                   </View>

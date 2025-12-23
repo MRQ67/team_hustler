@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, Image, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SettingsScreen() {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const { savingsGoals } = useFinancialData(); // Get savings goals to potentially show a count
+  const { selectedCurrency, setSelectedCurrency: setGlobalSelectedCurrency } = useCurrencyStore();
 
   const [darkMode, setDarkMode] = useState(true);
-  const [faceId, setFaceId] = useState(true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -85,7 +89,7 @@ export default function SettingsScreen() {
                  />
               </TouchableOpacity>
               {/* Item 2 */}
-              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5 border-b border-white/5">
+              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5 border-b border-white/5" onPress={() => setShowNotificationModal(true)}>
                  <View className="flex-row items-center gap-4">
                     <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
                        <MaterialIcons name="notifications" size={20} color="rgba(211, 78, 78, 0.8)" />
@@ -93,12 +97,14 @@ export default function SettingsScreen() {
                     <Text className="text-white/90 font-medium font-body">Notifications</Text>
                  </View>
                  <View className="flex-row items-center gap-2">
-                    <Text className="text-white/40 text-sm font-body">On</Text>
+                    <Text className={`text-sm font-body ${notificationsEnabled ? 'text-accent' : 'text-white/40'}`}>
+                      {notificationsEnabled ? 'On' : 'Off'}
+                    </Text>
                     <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
                  </View>
               </TouchableOpacity>
               {/* Item 3 */}
-              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5">
+              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5" onPress={() => setShowCurrencyModal(true)}>
                  <View className="flex-row items-center gap-4">
                     <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
                        <MaterialIcons name="payments" size={20} color="#818cf8" />
@@ -106,44 +112,13 @@ export default function SettingsScreen() {
                     <Text className="text-white/90 font-medium font-body">Currency</Text>
                  </View>
                  <View className="flex-row items-center gap-2">
-                    <Text className="text-white/40 text-sm font-body">USD</Text>
+                    <Text className="text-white/40 text-sm font-body">{selectedCurrency}</Text>
                     <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
                  </View>
               </TouchableOpacity>
            </GlassPane>
         </View>
 
-        {/* Group: Security */}
-        <View className="gap-3">
-           <Text className="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider font-display">Security</Text>
-           <GlassPane className="rounded-2xl overflow-hidden flex-col">
-              {/* Item 1 */}
-              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5 border-b border-white/5">
-                 <View className="flex-row items-center gap-4">
-                    <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
-                       <MaterialIcons name="face" size={20} color="#34d399" />
-                    </View>
-                    <Text className="text-white/90 font-medium font-body">Face ID</Text>
-                 </View>
-                 <Switch 
-                    value={faceId} 
-                    onValueChange={setFaceId}
-                    trackColor={{ false: "#3e3e3e", true: "#D34E4E" }}
-                    thumbColor={faceId ? "#fff" : "#f4f3f4"}
-                 />
-              </TouchableOpacity>
-              {/* Item 2 */}
-              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5">
-                 <View className="flex-row items-center gap-4">
-                    <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
-                       <MaterialIcons name="lock" size={20} color="#fb923c" />
-                    </View>
-                    <Text className="text-white/90 font-medium font-body">Change PIN</Text>
-                 </View>
-                 <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
-              </TouchableOpacity>
-           </GlassPane>
-        </View>
 
         {/* Group: Financial Goals */}
         <View className="gap-3">
@@ -181,6 +156,24 @@ export default function SettingsScreen() {
            </GlassPane>
         </View>
 
+        {/* Group: Android Features */}
+        {Platform.OS === 'android' && (
+          <View className="gap-3">
+             <Text className="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider font-display">Android Features</Text>
+             <GlassPane className="rounded-2xl overflow-hidden flex-col">
+                <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5">
+                   <View className="flex-row items-center gap-4">
+                      <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
+                         <MaterialIcons name="sms" size={20} color="#F9E7B2" />
+                      </View>
+                      <Text className="text-white/90 font-medium font-body">SMS Transaction Parsing</Text>
+                   </View>
+                   <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
+                </TouchableOpacity>
+             </GlassPane>
+          </View>
+        )}
+
         {/* Logout */}
         <TouchableOpacity 
            className="w-full rounded-2xl p-4 bg-white/5 border border-white/10 items-center justify-center flex-row gap-2 active:bg-primary/10 mt-2"
@@ -195,6 +188,98 @@ export default function SettingsScreen() {
            <Text className="text-white/20 text-xs font-medium font-body">Version 2.4.0</Text>
         </View>
       </View>
+
+      {/* Currency Selection Modal */}
+      {showCurrencyModal && (
+        <View className="absolute inset-0 bg-black/50 items-center justify-center z-50 p-4">
+          <GlassPane className="w-full max-w-md rounded-3xl p-6">
+            <View className="flex-row items-center justify-between mb-6">
+              <Text className="text-xl font-bold text-white font-display">Select Currency</Text>
+              <TouchableOpacity onPress={() => setShowCurrencyModal(false)}>
+                <MaterialIcons name="close" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView className="max-h-60">
+              {['USD ($)', 'EUR (€)', 'GBP (£)', 'ETB (Br)', 'JPY (¥)', 'CNY (¥)', 'INR (₹)', 'CAD (C$)', 'AUD (A$)'].map((currency) => (
+                <TouchableOpacity
+                  key={currency}
+                  className={`flex-row items-center justify-between p-4 rounded-xl mb-2 ${selectedCurrency === currency.split(' ')[0] ? 'bg-primary/20' : 'bg-white/5'}`}
+                  onPress={() => {
+                    setGlobalSelectedCurrency(currency.split(' ')[0]);
+                    setShowCurrencyModal(false);
+                  }}
+                >
+                  <Text className={`font-medium ${selectedCurrency === currency.split(' ')[0] ? 'text-white' : 'text-white/70'}`}>
+                    {currency}
+                  </Text>
+                  {selectedCurrency === currency.split(' ')[0] && (
+                    <MaterialIcons name="check" size={20} color="#F9E7B2" />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </GlassPane>
+        </View>
+      )}
+
+      {/* Notification Settings Modal */}
+      {showNotificationModal && (
+        <View className="absolute inset-0 bg-black/50 items-center justify-center z-50 p-4">
+          <GlassPane className="w-full max-w-md rounded-3xl p-6">
+            <View className="flex-row items-center justify-between mb-6">
+              <Text className="text-xl font-bold text-white font-display">Notification Settings</Text>
+              <TouchableOpacity onPress={() => setShowNotificationModal(false)}>
+                <MaterialIcons name="close" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="gap-4">
+              <TouchableOpacity
+                className="flex-row items-center justify-between p-4 rounded-xl bg-white/5"
+                onPress={() => {
+                  setNotificationsEnabled(!notificationsEnabled);
+                }}
+              >
+                <Text className="font-medium text-white">Enable Notifications</Text>
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={setNotificationsEnabled}
+                  trackColor={{ false: "#3e3e3e", true: "#D34E4E" }}
+                  thumbColor={notificationsEnabled ? "#fff" : "#f4f3f4"}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity className="flex-row items-center justify-between p-4 rounded-xl bg-white/5">
+                <Text className="font-medium text-white">Budget Alerts</Text>
+                <Switch
+                  value={true}
+                  trackColor={{ false: "#3e3e3e", true: "#D34E4E" }}
+                  thumbColor="#f4f3f4"
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity className="flex-row items-center justify-between p-4 rounded-xl bg-white/5">
+                <Text className="font-medium text-white">Transaction Alerts</Text>
+                <Switch
+                  value={true}
+                  trackColor={{ false: "#3e3e3e", true: "#D34E4E" }}
+                  thumbColor="#f4f3f4"
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity className="flex-row items-center justify-between p-4 rounded-xl bg-white/5">
+                <Text className="font-medium text-white">Monthly Reports</Text>
+                <Switch
+                  value={true}
+                  trackColor={{ false: "#3e3e3e", true: "#D34E4E" }}
+                  thumbColor="#f4f3f4"
+                />
+              </TouchableOpacity>
+            </View>
+          </GlassPane>
+        </View>
+      )}
     </ScreenWrapper>
   );
 }

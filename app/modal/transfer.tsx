@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ScrollView, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '../../utils/supabase';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 
 export default function TransferModal() {
   const router = useRouter();
   const { user } = useAuth();
   const { refetch } = useFinancialData(); // Get refetch function to update data after transfer
+  const { getCurrencySymbol } = useCurrencyStore();
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [fromAccount, setFromAccount] = useState('');
@@ -238,7 +240,7 @@ export default function TransferModal() {
           <View className="gap-2">
             <Text className="text-white/60 font-medium mb-2">Amount</Text>
             <GlassPane className="rounded-2xl p-4 flex-row items-center">
-              <Text className="text-white/60 text-xl mr-2">$</Text>
+              <Text className="text-white/60 text-xl mr-2">{getCurrencySymbol()}</Text>
               <Text className="text-white text-3xl font-display flex-1">
                 {amount || '0.00'}
               </Text>
@@ -249,11 +251,13 @@ export default function TransferModal() {
           <View className="gap-2">
             <Text className="text-white/60 font-medium mb-2">Description (Optional)</Text>
             <GlassPane className="rounded-2xl p-4">
-              <input
+              <TextInput
                 className="text-white font-display w-full"
                 placeholder="Transfer description"
                 value={description}
                 onChangeText={setDescription}
+                multiline
+                numberOfLines={3}
               />
             </GlassPane>
           </View>

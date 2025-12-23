@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../utils/supabase';
+import { Account } from '../../hooks/useFinancialData';
 
 export default function AccountModal() {
   const router = useRouter();
   const { user } = useAuth();
-  const [accountName, setAccountName] = useState('');
-  const [accountType, setAccountType] = useState('cash');
-  const [startingBalance, setStartingBalance] = useState('0');
-  const [currency, setCurrency] = useState('USD');
+  const params = useLocalSearchParams();
+  const isEditing = !!params.id; // Check if we're editing an existing account
+  const accountId = params.id as string;
+
+  const [accountName, setAccountName] = useState(params.name?.toString() || '');
+  const [accountType, setAccountType] = useState(params.type?.toString() || 'cash');
+  const [startingBalance, setStartingBalance] = useState(params.balance?.toString() || '0');
+  const [currency, setCurrency] = useState(params.currency?.toString() || 'USD');
   const [loading, setLoading] = useState(false);
-  const [accountColor, setAccountColor] = useState('#60a5fa'); // Default blue color
-  const [accountIcon, setAccountIcon] = useState('payments'); // Default icon based on account type
+  const [accountColor, setAccountColor] = useState(params.color?.toString() || '#60a5fa'); // Default blue color
+  const [accountIcon, setAccountIcon] = useState(params.icon?.toString() || 'payments'); // Default icon based on account type
 
   const accountTypes = [
     { value: 'cash', label: 'Cash', icon: 'payments' },
@@ -44,7 +49,7 @@ export default function AccountModal() {
     return selectedCurrency ? selectedCurrency.symbol : '$';
   };
 
-  const handleCreateAccount = async () => {
+  const handleSaveAccount = async () => {
     if (!accountName.trim()) {
       alert('Please enter an account name');
       return;
@@ -53,27 +58,50 @@ export default function AccountModal() {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('accounts')
-        .insert([{
-          user_id: user?.id,
-          name: accountName.trim(),
-          account_type: accountType,
-          starting_balance: parseFloat(startingBalance) || 0,
-          currency: currency,
-          color: accountColor,
-          icon: accountIcon,
-        }]);
+      if (isEditing) {
+        // Update existing account
+        const { error } = await supabase
+          .from('accounts')
+          .update({
+            name: accountName.trim(),
+            account_type: accountType,
+            starting_balance: parseFloat(startingBalance) || 0,
+            currency: currency,
+            color: accountColor,
+            icon: accountIcon,
+          })
+          .eq('id', accountId)
+          .eq('user_id', user?.id);
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+        alert('Account updated successfully');
+      } else {
+        // Create new account
+        const { error } = await supabase
+          .from('accounts')
+          .insert([{
+            user_id: user?.id,
+            name: accountName.trim(),
+            account_type: accountType,
+            starting_balance: parseFloat(startingBalance) || 0,
+            currency: currency,
+            color: accountColor,
+            icon: accountIcon,
+          }]);
+
+        if (error) {
+          throw error;
+        }
+        alert('Account created successfully');
       }
 
       // Go back to accounts page
       router.back();
     } catch (error: any) {
-      console.error('Error creating account:', error);
-      alert('Error creating account: ' + error.message);
+      console.error('Error saving account:', error);
+      alert('Error saving account: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -89,7 +117,7 @@ export default function AccountModal() {
         >
           <MaterialIcons name="close" size={24} color="white" />
         </TouchableOpacity>
-        <Text className="text-lg font-bold text-white font-display">Add Account</Text>
+        <Text className="text-lg font-bold text-white font-display">{isEditing ? 'Edit Account' : 'Add Account'}</Text>
         <View className="w-10" />
       </View>
 
@@ -188,15 +216,15 @@ export default function AccountModal() {
           </View>
         </View>
 
-        {/* Create Button */}
+        {/* Save Button */}
         <View className="pt-4">
           <TouchableOpacity
             className="w-full bg-primary py-4 rounded-2xl items-center shadow-lg shadow-primary/30 active:scale-[0.98]"
-            onPress={handleCreateAccount}
+            onPress={handleSaveAccount}
             disabled={loading}
           >
             <Text className="text-white font-bold text-lg font-display">
-              {loading ? 'Creating...' : 'Create Account'}
+              {loading ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Account' : 'Create Account')}
             </Text>
           </TouchableOpacity>
         </View>

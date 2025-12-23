@@ -21,6 +21,8 @@ export interface Account {
   account_type: string;
   balance: number;
   currency: string;
+  color?: string;
+  icon?: string;
 }
 
 export interface Budget {

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { supabase } from '../../utils/supabase';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 
 export default function BudgetModal() {
   const router = useRouter();
   const { user } = useAuth();
   const { refetch } = useFinancialData(); // Get refetch function to update data after budget creation
+  const { getCurrencySymbol } = useCurrencyStore();
   const [budgetName, setBudgetName] = useState('');
   const [budgetAmount, setBudgetAmount] = useState('0');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -113,7 +115,7 @@ export default function BudgetModal() {
         <View className="gap-2">
           <Text className="text-white/60 font-medium mb-2">Budget Amount</Text>
           <GlassPane className="rounded-2xl p-4 flex-row items-center">
-            <Text className="text-white/60 text-xl mr-2">$</Text>
+            <Text className="text-white/60 text-xl mr-2">{getCurrencySymbol()}</Text>
             <TextInput
               className="text-white text-xl font-display flex-1"
               placeholder="0.00"

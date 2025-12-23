@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';

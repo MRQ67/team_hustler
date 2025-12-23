@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../utils/supabase';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
 
 export default function TransactionModal() {
   const router = useRouter();
   const { user } = useAuth();
   const { refetch } = useFinancialData(); // Get refetch function to update data after transaction
+  const { getCurrencySymbol } = useCurrencyStore();
   const [amount, setAmount] = useState('0');
   const [type, setType] = useState<'expense' | 'income' | 'transfer'>('expense');
   const [description, setDescription] = useState('');
@@ -189,7 +191,7 @@ export default function TransactionModal() {
            <View className="items-center">
               <Text className="text-white/60 font-body mb-2">Amount</Text>
               <View className="flex-row items-center">
-                 <Text className="text-4xl font-bold text-white/60 mr-1">$</Text>
+                 <Text className="text-4xl font-bold text-white/60 mr-1">{getCurrencySymbol()}</Text>
                  <Text className="text-6xl font-bold text-white font-display tracking-tight">
                     {amount}
                  </Text>

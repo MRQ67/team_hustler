@@ -1,18 +1,21 @@
 import React, { useCallback } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image, RefreshControl, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useAuth } from '../../providers/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
+import { supabase } from '../../utils/supabase';
 
 export default function AccountsScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { totalBalance, accounts, loading, refetch } = useFinancialData();
+  const { getCurrencySymbol } = useCurrencyStore();
 
   // Refetch data when the screen comes into focus
   useFocusEffect(
@@ -25,6 +28,27 @@ export default function AccountsScreen() {
     refetch();
   }, [refetch]);
 
+  const handleDeleteAccount = async (accountId: string) => {
+    try {
+      const { error } = await supabase
+        .from('accounts')
+        .delete()
+        .eq('id', accountId)
+        .eq('user_id', user?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Refresh the data to reflect the deletion
+      await refetch();
+      alert('Account deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting account:', error);
+      alert('Error deleting account: ' + error.message);
+    }
+  };
+
   return (
     <ScreenWrapper
         refreshControl={
@@ -36,31 +60,9 @@ export default function AccountsScreen() {
         <View className="flex-1">
           <Text className="text-white text-xl font-bold font-display">Accounts</Text>
         </View>
-        <TouchableOpacity className="relative w-10 h-10 rounded-full bg-white/5 border border-white/10 items-center justify-center">
-          <MaterialIcons name="notifications-none" size={24} color="white" />
-          <View className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border border-[#1f1313]" />
-        </TouchableOpacity>
+        <View className="w-10" />
       </View>
 
-      {/* Net Worth Section */}
-      <View className="px-6 mb-8">
-        <View className="flex-col">
-          <Text className="text-accent/80 text-sm font-medium tracking-wide uppercase mb-1 font-body">Total Net Worth</Text>
-          <View className="flex-row items-baseline gap-2">
-            <Text className="text-white text-5xl font-bold tracking-tight font-display">
-              ${Math.floor(totalBalance).toLocaleString()}
-              <Text className="text-white/40 text-3xl font-display">.{(totalBalance % 1).toFixed(2).substring(2)}</Text>
-            </Text>
-          </View>
-          <View className="flex-row items-center gap-2 mt-2">
-            <View className="flex-row items-center justify-center px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30">
-              <MaterialIcons name="trending-up" size={14} color="#4ade80" />
-              <Text className="text-green-400 text-xs font-bold ml-1 font-body">+2.4%</Text>
-            </View>
-            <Text className="text-white/40 text-xs font-medium font-body">vs last month</Text>
-          </View>
-        </View>
-      </View>
 
       {/* Bento Grid Layout */}
       <View className="px-6 flex-col gap-4 pb-32">
@@ -82,10 +84,10 @@ export default function AccountsScreen() {
                             colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.05)']}
                             className="w-10 h-10 rounded-xl items-center justify-center border border-white/10"
                         >
-                            <MaterialIcons 
-                                name={account.account_type === 'card' ? 'credit-card' : 'account-balance-wallet'} 
-                                size={20} 
-                                color="white" 
+                            <MaterialIcons
+                                name={account.account_type === 'card' ? 'credit-card' : 'account-balance-wallet'}
+                                size={20}
+                                color="white"
                             />
                         </LinearGradient>
                         <View>
@@ -93,12 +95,39 @@ export default function AccountsScreen() {
                             <Text className="text-white text-base font-bold font-display">{account.name}</Text>
                         </View>
                         </View>
-                        <MaterialIcons name="arrow-forward" size={20} color="rgba(255,255,255,0.4)" />
+                        <View className="flex-row gap-2">
+                            <TouchableOpacity
+                                className="p-2"
+                                onPress={() => router.push(`/modal/account?id=${account.id}&name=${encodeURIComponent(account.name)}&type=${account.account_type}&balance=${account.balance}&currency=${account.currency}&color=${account.color || '#60a5fa'}&icon=${account.icon || 'payments'}`)}
+                            >
+                                <MaterialIcons name="edit" size={20} color="rgba(255,255,255,0.7)" />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                className="p-2"
+                                onPress={() => {
+                                    // Show confirmation dialog before deleting
+                                    Alert.alert(
+                                        'Delete Account',
+                                        'Are you sure you want to delete this account? This action cannot be undone.',
+                                        [
+                                            { text: 'Cancel', style: 'cancel' },
+                                            {
+                                                text: 'Delete',
+                                                style: 'destructive',
+                                                onPress: () => handleDeleteAccount(account.id)
+                                            }
+                                        ]
+                                    );
+                                }}
+                            >
+                                <MaterialIcons name="delete" size={20} color="rgba(255,255,255,0.7)" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <View className="flex-row items-end justify-between">
                         <View>
                         <Text className="text-3xl font-bold text-white tracking-tight font-display">
-                            ${account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            {getCurrencySymbol()}{account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                         </Text>
                         <Text className="text-white/40 text-xs mt-1 font-body">{account.currency}</Text>
                         </View>
@@ -120,8 +149,7 @@ export default function AccountsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 -mx-6 px-6 pb-2">
           {[
             { icon: 'add', label: 'Add Account', bg: 'bg-primary', iconColor: 'white', action: () => router.push('/modal/account') },
-            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white', action: () => router.push('/modal/transfer') },
-            { icon: 'qr-code-scanner', label: 'Scan', bg: 'bg-white/10', iconColor: 'white', action: () => {} }
+            { icon: 'swap-horiz', label: 'Transfer', bg: 'bg-white/10', iconColor: 'white', action: () => router.push('/modal/transfer') }
           ].map((action, i) => (
              <TouchableOpacity
                 key={i}

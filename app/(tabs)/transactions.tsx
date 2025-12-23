@@ -7,26 +7,33 @@ import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFinancialData } from '../../hooks/useFinancialData';
+import { useCurrencyStore } from '../../store/currencyStore';
+import SmsParserManager from '../../components/SmsParserManager';
+import { Platform } from 'react-native';
 import { format } from 'date-fns';
 
 export default function TransactionsScreen() {
   const router = useRouter();
-  const { recentTransactions, loading } = useFinancialData();
+  const { recentTransactions, loading, refetch } = useFinancialData();
+  const { getCurrencySymbol } = useCurrencyStore();
   const [selectedFilter, setSelectedFilter] = useState('All');
   const filters = ['All', 'Food', 'Transport', 'Shopping', 'Bills'];
 
   // Refetch data when the screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
-      // We don't need to explicitly call refetch here since useFinancialData is already set to refetch on focus in home and accounts
-    }, [])
+      refetch();
+    }, [refetch])
   );
 
   return (
     <ScreenWrapper>
        {/* Header */}
       <View className="flex-row items-center justify-between px-6 pt-12 pb-2 z-20 sticky top-0 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
-        <Text className="text-3xl font-bold tracking-tight text-white font-display">Transactions</Text>
+        <TouchableOpacity className="w-10 h-10 items-center justify-center rounded-full bg-white/5 border border-white/10 active:bg-white/10" onPress={() => router.push('/(tabs)/index')}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text className="text-2xl font-bold tracking-tight text-white font-display flex-1 text-center -ml-10">Transactions</Text>
         <TouchableOpacity
           className="flex-row items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5 active:bg-white/10"
           onPress={() => router.push('/modal/transfer')}
@@ -58,17 +65,22 @@ export default function TransactionsScreen() {
                 <MaterialIcons name="analytics" size={60} color="#D34E4E" />
               </View>
               <Text className="text-white/60 text-sm font-medium mb-1 font-body">Total Spent</Text>
-              <Text className="text-4xl font-bold text-white mb-4 tracking-tight font-display">${recentTransactions
+              <Text className="text-4xl font-bold text-white mb-4 tracking-tight font-display">{getCurrencySymbol()}{recentTransactions
                 .filter(tx => tx.transaction_type === 'expense')
                 .reduce((sum, tx) => sum + tx.amount, 0).toFixed(2)}</Text>
               <View className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-2">
                  <View className="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(211,78,78,0.5)]" style={{ width: '75%' }} />
               </View>
               <View className="flex-row justify-between items-center text-xs">
-                 <Text className="text-white/50 font-body">$2,500 Limit</Text>
+                 <Text className="text-white/50 font-body">{getCurrencySymbol()}2,500 Limit</Text>
                  <Text className="text-accent font-body">+12% vs last month</Text>
               </View>
            </GlassPane>
+
+           {/* SMS Parser Manager - Only for Android */}
+           {Platform.OS === 'android' && (
+             <SmsParserManager />
+           )}
 
            {/* Recent Transactions */}
            <View className="w-full mt-2">
@@ -100,7 +112,7 @@ export default function TransactionsScreen() {
                         </View>
                       </View>
                       <Text className={`font-bold text-base font-display ${tx.transaction_type === 'income' ? 'text-accent' : 'text-primary'}`}>
-                        {tx.transaction_type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
+                        {tx.transaction_type === 'income' ? '+' : '-'}{getCurrencySymbol()}{Math.abs(tx.amount).toFixed(2)}
                       </Text>
                     </GlassPane>
                   ))

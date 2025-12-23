@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'expo-router';
-import { useAuth } from '../providers/AuthProvider';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Index() {
   const { session, loading } = useAuth();
