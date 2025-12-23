@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
@@ -93,7 +93,12 @@ export default function AccountModal() {
         <View className="w-10" />
       </View>
 
-      <View className="flex-1 px-6 pt-6 justify-between pb-8">
+      <ScrollView
+        className="flex-1 px-6 pt-6 pb-8"
+        contentContainerStyle={{ justifyContent: 'space-between', paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Account Name Input */}
         <View className="gap-2">
           <Text className="text-white/60 font-medium mb-2">Account Name</Text>
@@ -184,16 +189,18 @@ export default function AccountModal() {
         </View>
 
         {/* Create Button */}
-        <TouchableOpacity
-          className="w-full bg-primary py-4 rounded-2xl items-center shadow-lg shadow-primary/30 active:scale-[0.98]"
-          onPress={handleCreateAccount}
-          disabled={loading}
-        >
-          <Text className="text-white font-bold text-lg font-display">
-            {loading ? 'Creating...' : 'Create Account'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <View className="pt-4">
+          <TouchableOpacity
+            className="w-full bg-primary py-4 rounded-2xl items-center shadow-lg shadow-primary/30 active:scale-[0.98]"
+            onPress={handleCreateAccount}
+            disabled={loading}
+          >
+            <Text className="text-white font-bold text-lg font-display">
+              {loading ? 'Creating...' : 'Create Account'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 }

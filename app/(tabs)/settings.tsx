@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Switch, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, Image, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import GlassPane from '../../components/GlassPane';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../providers/AuthProvider';
-import { useRouter } from 'expo-router';
+import { useFinancialData } from '../../hooks/useFinancialData';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function SettingsScreen() {
   const { user, signOut } = useAuth();
   const router = useRouter();
-  
+  const { savingsGoals } = useFinancialData(); // Get savings goals to potentially show a count
+
   const [darkMode, setDarkMode] = useState(true);
   const [faceId, setFaceId] = useState(true);
 
   const handleSignOut = async () => {
     await signOut();
     router.replace('/auth/login');
+  };
+
+  const handleSavingsGoalsPress = () => {
+    // Navigate to the savings goals modal
+    router.push('/modal/savings-goal');
   };
 
   return (
@@ -134,6 +141,27 @@ export default function SettingsScreen() {
                     <Text className="text-white/90 font-medium font-body">Change PIN</Text>
                  </View>
                  <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
+              </TouchableOpacity>
+           </GlassPane>
+        </View>
+
+        {/* Group: Financial Goals */}
+        <View className="gap-3">
+           <Text className="px-2 text-sm font-semibold text-white/40 uppercase tracking-wider font-display">Financial Goals</Text>
+           <GlassPane className="rounded-2xl overflow-hidden flex-col">
+              <TouchableOpacity className="flex-row items-center justify-between p-4 active:bg-white/5" onPress={handleSavingsGoalsPress}>
+                 <View className="flex-row items-center gap-4">
+                    <View className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 items-center justify-center shadow-inner">
+                       <MaterialIcons name="savings" size={20} color="#34d399" />
+                    </View>
+                    <Text className="text-white/90 font-medium font-body">Savings Goals</Text>
+                 </View>
+                 <View className="flex-row items-center">
+                   {savingsGoals && savingsGoals.length > 0 && (
+                     <Text className="text-white/50 text-xs mr-2">{savingsGoals.length}</Text>
+                   )}
+                   <MaterialIcons name="chevron-right" size={20} color="rgba(255,255,255,0.2)" />
+                 </View>
               </TouchableOpacity>
            </GlassPane>
         </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../providers/AuthProvider';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -141,7 +141,12 @@ export default function TransferModal() {
         <View className="w-10" />
       </View>
 
-      <View className="flex-1 justify-between pb-8 px-4">
+      <ScrollView
+        className="flex-1 pb-8 px-4"
+        contentContainerStyle={{ justifyContent: 'space-between', paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Transfer Details Section */}
         <View className="gap-6">
           {/* From Account Selector */}
@@ -155,8 +160,8 @@ export default function TransferModal() {
                 <MaterialIcons name="keyboard-arrow-down" size={20} color="white" />
               </View>
             </GlassPane>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               className="mt-2"
               onPress={() => {
                 // Show account selection modal or dropdown
@@ -200,8 +205,8 @@ export default function TransferModal() {
                 <MaterialIcons name="keyboard-arrow-down" size={20} color="white" />
               </View>
             </GlassPane>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               className="mt-2"
               onPress={() => {
                 // Show account selection modal or dropdown
@@ -255,7 +260,7 @@ export default function TransferModal() {
         </View>
 
         {/* Keypad Section */}
-        <View className="gap-4">
+        <View className="gap-4 pt-4">
           {/* Keypad */}
           <GlassPane className="rounded-[32px] p-4">
             <View className="flex-row gap-2 mb-2">
@@ -291,7 +296,7 @@ export default function TransferModal() {
             </TouchableOpacity>
           </GlassPane>
         </View>
-      </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 }

@@ -42,6 +42,18 @@ export interface AnalyticsData {
   amount: number;
 }
 
+export interface SavingsGoal {
+  id: string;
+  name: string;
+  target_amount: number;
+  current_amount: number;
+  target_date?: string;
+  description?: string;
+  account_id?: string;
+  is_completed: boolean;
+  created_at: string;
+}
+
 export interface FinancialData {
   totalBalance: number;
   income: number;
@@ -49,6 +61,7 @@ export interface FinancialData {
   recentTransactions: Transaction[];
   accounts: Account[];
   budgets: Budget[];
+  savingsGoals: SavingsGoal[];
   analytics: AnalyticsData[];
   loading: boolean;
   refetch: () => Promise<void>;
@@ -62,6 +75,7 @@ export function useFinancialData() {
     recentTransactions: [],
     accounts: [],
     budgets: [],
+    savingsGoals: [],
     analytics: [],
     loading: true,
     refetch: async () => {},
@@ -305,6 +319,29 @@ export function useFinancialData() {
         analyticsData.sort((a, b) => b.amount - a.amount);
       }
 
+      // 6. Fetch Savings Goals
+      const { data: savingsGoalsData, error: savingsGoalsError } = await supabase
+        .from('savings_goals')
+        .select('*')
+        .eq('user_id', user.id);
+
+      let savingsGoals: SavingsGoal[] = [];
+      if (savingsGoalsError) {
+        console.error('Error fetching savings goals:', savingsGoalsError);
+      } else {
+        savingsGoals = (savingsGoalsData || []).map(goal => ({
+          id: goal.id,
+          name: goal.name,
+          target_amount: Number(goal.target_amount),
+          current_amount: Number(goal.current_amount),
+          target_date: goal.target_date,
+          description: goal.description,
+          account_id: goal.account_id,
+          is_completed: goal.is_completed,
+          created_at: goal.created_at,
+        }));
+      }
+
       // Create the new data object
       const newData: FinancialData = {
         totalBalance: totalBal,
@@ -317,6 +354,7 @@ export function useFinancialData() {
         })) || [],
         accounts: accountsWithBalance,
         budgets: budgetsWithSpent,
+        savingsGoals: savingsGoals,
         analytics: analyticsData,
         loading: false,
         refetch: fetchData,

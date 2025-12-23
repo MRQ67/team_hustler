@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../providers/AuthProvider';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -162,7 +162,12 @@ export default function TransactionModal() {
         <View className="w-10" />
       </View>
 
-      <View className="flex-1 justify-between pb-8">
+      <ScrollView
+        className="flex-1 pb-8"
+        contentContainerStyle={{ justifyContent: 'space-between', paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Top Section: Type Selector & Display */}
         <View className="px-6 pt-6 gap-8">
            {/* Segmented Control */}
@@ -249,7 +254,7 @@ export default function TransactionModal() {
               </TouchableOpacity>
            </GlassPane>
         </View>
-      </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 }
